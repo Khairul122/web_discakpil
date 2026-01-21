@@ -104,8 +104,8 @@
                                 <th>Ranking</th>
                                 <th>Kode</th>
                                 <th>Nama Layanan</th>
-                                <th>Nilai Akhir</th>
-                                <th>Periode</th>
+                                <th>Nilai SMART</th>
+                                <th>Tanggal Perhitungan</th>
                                 <th>Status</th>
                               </tr>
                             </thead>
@@ -114,35 +114,37 @@
                                 <?php foreach ($data['layanan_performance'] as $index => $layanan): ?>
                                 <tr>
                                   <td>
-                                    <?php if ($layanan['ranking'] == 1): ?>
-                                      <span class="badge badge-success badge-pill">🥇 <?= $layanan['ranking'] ?></span>
-                                    <?php elseif ($layanan['ranking'] == 2): ?>
-                                      <span class="badge badge-info badge-pill">🥈 <?= $layanan['ranking'] ?></span>
-                                    <?php elseif ($layanan['ranking'] == 3): ?>
-                                      <span class="badge badge-warning badge-pill">🥉 <?= $layanan['ranking'] ?></span>
+                                    <?php if ($index == 0): ?>
+                                      <span class="badge badge-success badge-pill">🥇 <?= $index + 1 ?></span>
+                                    <?php elseif ($index == 1): ?>
+                                      <span class="badge badge-info badge-pill">🥈 <?= $index + 1 ?></span>
+                                    <?php elseif ($index == 2): ?>
+                                      <span class="badge badge-warning badge-pill">🥉 <?= $index + 1 ?></span>
                                     <?php else: ?>
-                                      <span class="badge badge-secondary badge-pill"><?= $layanan['ranking'] ?></span>
+                                      <span class="badge badge-secondary badge-pill"><?= $index + 1 ?></span>
                                     <?php endif; ?>
                                   </td>
                                   <td><span class="badge badge-primary"><?= htmlspecialchars($layanan['kode_alternatif']) ?></span></td>
                                   <td><?= htmlspecialchars($layanan['nama_layanan']) ?></td>
                                   <td>
-                                    <div class="progress">
-                                      <div class="progress-bar bg-gradient-primary" role="progressbar"
-                                           style="width: <?= ($layanan['nilai_akhir'] * 100) ?>%"
-                                           aria-valuenow="<?= $layanan['nilai_akhir'] * 100 ?>"
+                                    <div class="d-flex align-items-center">
+                                      <div class="progress flex-grow-1" style="height: 25px;">
+                                        <div class="progress-bar bg-gradient-primary" role="progressbar"
+                                           style="width: <?= $layanan['nilai_smart'] ?>%"
+                                           aria-valuenow="<?= $layanan['nilai_smart'] ?>"
                                            aria-valuemin="0" aria-valuemax="100">
-                                        <?= number_format($layanan['nilai_akhir'] * 100, 2) ?>%
+                                          <?= number_format($layanan['nilai_smart'], 2) ?>%
+                                        </div>
                                       </div>
                                     </div>
                                   </td>
-                                  <td><?= date('d/m/Y', strtotime($layanan['periode'])) ?></td>
+                                  <td><?= date('d/m/Y H:i', strtotime($layanan['tanggal_perhitungan'])) ?></td>
                                   <td>
-                                    <?php if ($layanan['nilai_akhir'] >= 0.8): ?>
+                                    <?php if ($layanan['nilai_smart'] >= 80): ?>
                                       <span class="badge badge-success">Sangat Baik</span>
-                                    <?php elseif ($layanan['nilai_akhir'] >= 0.6): ?>
+                                    <?php elseif ($layanan['nilai_smart'] >= 60): ?>
                                       <span class="badge badge-info">Baik</span>
-                                    <?php elseif ($layanan['nilai_akhir'] >= 0.4): ?>
+                                    <?php elseif ($layanan['nilai_smart'] >= 40): ?>
                                       <span class="badge badge-warning">Cukup</span>
                                     <?php else: ?>
                                       <span class="badge badge-danger">Kurang</span>
@@ -155,8 +157,8 @@
                                   <td colspan="6" class="text-center text-muted py-4">
                                     <i class="fas fa-inbox fa-3x mb-3"></i>
                                     <p>Belum ada data perhitungan SMART</p>
-                                    <a href="index.php?controller=smart&action=index" class="btn btn-gradient-primary btn-sm mt-2">
-                                      <i class="fas fa-calculator mr-2"></i>Mulai Perhitungan
+                                    <a href="index.php?controller=hasil&action=index" class="btn btn-gradient-primary btn-sm mt-2">
+                                      <i class="fas fa-calculator mr-2"></i>Lihat Hasil SMART
                                     </a>
                                   </td>
                                 </tr>
@@ -169,7 +171,7 @@
                   </div>
                 </div>
 
-                <!-- Top 10 Layanan & Survey Trend -->
+                <!-- Top 10 Layanan & Kriteria Distribution -->
                 <div class="row">
                   <div class="col-lg-7 grid-margin stretch-card">
                     <div class="card">
@@ -217,6 +219,18 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="col-lg-5 grid-margin stretch-card">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">Distribusi Jenis Kriteria</h4>
+                        <p class="card-description">Berdasarkan tipe kriteria</p>
+                        <div style="height: 250px;">
+                          <canvas id="kriteriaPieChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Quick Actions for Kepala Dinas -->
@@ -237,7 +251,7 @@
                             </a>
                           </div>
                           <div class="col-md-4 mb-3">
-                            <a href="index.php?controller=smart&action=index" class="btn btn-gradient-success btn-block">
+                            <a href="index.php?controller=hasil&action=index" class="btn btn-gradient-success btn-block">
                               <i class="fas fa-chart-bar mr-2"></i>Hasil SMART
                             </a>
                           </div>

@@ -49,7 +49,7 @@ class DashboardModel
             $stats['total_penilaian'] = $result['total'];
 
             // Total hasil SMART
-            $query = "SELECT COUNT(*) as total FROM hasil_akhir_smart";
+            $query = "SELECT COUNT(*) as total FROM hasil_akhir";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -68,8 +68,8 @@ class DashboardModel
             $activities = [];
 
             // Penilaian terbaru
-            $query = "SELECT p.*, r.nama as nama_responden, a.nama_layanan as nama_layanan,
-                             k.nama_kriteria as nama_kriteria, s.nama_sub as nama_sub
+            $query = "SELECT p.*, r.nama_lengkap as nama_responden, a.nama_layanan as nama_layanan,
+                             k.nama_kriteria as nama_kriteria, s.nama_pilihan as nama_sub
                      FROM penilaian p
                      JOIN responden r ON p.id_responden = r.id_responden
                      JOIN alternatif a ON p.id_alternatif = a.id_alternatif
@@ -83,9 +83,10 @@ class DashboardModel
 
             // Hasil SMART terbaru
             $query = "SELECT h.*, a.nama_layanan, a.kode_alternatif
-                     FROM hasil_akhir_smart h
-                     JOIN alternatif a ON h.id_alternatif = a.id_alternatif
-                     ORDER BY h.periode DESC, h.ranking ASC LIMIT 5";
+                     FROM hasil_akhir h
+                     JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                     ORDER BY h.tanggal_perhitungan DESC
+                     LIMIT 5";
 
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -102,9 +103,9 @@ class DashboardModel
     {
         try {
             $query = "SELECT a.id_alternatif, a.kode_alternatif, a.nama_layanan,
-                             AVG(h.nilai_akhir) as rata_nilai, COUNT(h.id_hasil) as total_penilaian
-                     FROM hasil_akhir_smart h
-                     JOIN alternatif a ON h.id_alternatif = a.id_alternatif
+                             AVG(h.nilai_smart) as rata_nilai, COUNT(h.id_hasil) as total_penilaian
+                     FROM hasil_akhir h
+                     JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
                      GROUP BY a.id_alternatif, a.kode_alternatif, a.nama_layanan
                      ORDER BY rata_nilai DESC
                      LIMIT :limit";
@@ -144,7 +145,7 @@ class DashboardModel
     {
         try {
             $query = "SELECT * FROM responden
-                     ORDER BY tanggal_survey DESC
+                     ORDER BY tanggal_isi DESC
                      LIMIT :limit";
 
             $stmt = $this->conn->prepare($query);
@@ -162,13 +163,13 @@ class DashboardModel
     {
         try {
             $query = "SELECT a.id_alternatif, a.kode_alternatif, a.nama_layanan,
-                             h.ranking, h.nilai_akhir, h.periode
-                     FROM hasil_akhir_smart h
-                     JOIN alternatif a ON h.id_alternatif = a.id_alternatif
-                     WHERE h.periode = (
-                         SELECT MAX(periode) FROM hasil_akhir_smart
+                             h.nilai_smart, h.tanggal_perhitungan
+                     FROM hasil_akhir h
+                     JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                     WHERE h.tanggal_perhitungan = (
+                         SELECT MAX(tanggal_perhitungan) FROM hasil_akhir
                      )
-                     ORDER BY h.ranking ASC";
+                     ORDER BY h.nilai_smart DESC";
 
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -200,10 +201,10 @@ class DashboardModel
     public function getSurveyTrend()
     {
         try {
-            $query = "SELECT DATE_FORMAT(tanggal_survey, '%Y-%m') as bulan,
+            $query = "SELECT DATE_FORMAT(tanggal_isi, '%Y-%m') as bulan,
                              COUNT(*) as total_survey
                      FROM responden
-                     GROUP BY DATE_FORMAT(tanggal_survey, '%Y-%m')
+                     GROUP BY DATE_FORMAT(tanggal_isi, '%Y-%m')
                      ORDER BY bulan DESC
                      LIMIT 12";
 

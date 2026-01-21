@@ -70,28 +70,84 @@ function getDashboardUrl()
          ========================================== -->
     <?php if (hasRole('admin')): ?>
 
-      <!-- Placeholder untuk menu admin lainnya -->
-      <!-- Menu akan ditambahkan nanti -->
+      <!-- MASTER DATA -->
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#masterData" aria-expanded="false" aria-controls="masterData">
+          <i class="fas fa-database menu-icon fa-sm"></i>
+          <span class="menu-title">Master Data</span>
+          <i class="fas fa-chevron-down ml-auto"></i>
+        </a>
+        <div class="collapse" id="masterData">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+              <a class="nav-link <?php echo isActive('alternatif') ? 'active' : ''; ?>"
+                 href="index.php?controller=alternatif&action=index">
+                <i class="fas fa-list-alt menu-icon fa-sm"></i>
+                <span class="menu-title">Alternatif</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <?php echo isActive('kriteria') ? 'active' : ''; ?>"
+                 href="index.php?controller=kriteria&action=index">
+                <i class="fas fa-sliders-h menu-icon fa-sm"></i>
+                <span class="menu-title">Kriteria</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- RESPONDEN -->
+      <li class="nav-item">
+        <a class="nav-link <?php echo isActive('responden') ? 'active' : ''; ?>"
+           href="index.php?controller=responden&action=index">
+          <i class="fas fa-users menu-icon fa-sm"></i>
+          <span class="menu-title">Responden</span>
+        </a>
+      </li>
+
+      <!-- PENILAIAN -->
+      <li class="nav-item">
+        <a class="nav-link <?php echo isActive('penilaian') ? 'active' : ''; ?>"
+           href="index.php?controller=penilaian&action=index">
+          <i class="fas fa-clipboard-check menu-icon fa-sm"></i>
+          <span class="menu-title">Penilaian</span>
+        </a>
+      </li>
+
+      <!-- HASIL AKHIR -->
+      <li class="nav-item">
+        <a class="nav-link <?php echo isActive('hasil') ? 'active' : ''; ?>"
+           href="index.php?controller=hasil&action=index">
+          <i class="fas fa-chart-line menu-icon fa-sm"></i>
+          <span class="menu-title">Hasil Akhir</span>
+        </a>
+      </li>
 
     <?php endif; ?>
 
     <!-- ==========================================
-         MENU KHUSUS KEPALA DINAS
+         MENU KHUSUS KEPALA DINAS (KADIS)
          ========================================== -->
-    <?php if (hasRole(['admin', 'kepala_dinas'])): ?>
+    <?php if (hasRole('kepala_dinas')): ?>
 
-      <!-- Placeholder untuk menu kepala dinas lainnya -->
-      <!-- Menu akan ditambahkan nanti -->
+      <!-- PENILAIAN -->
+      <li class="nav-item">
+        <a class="nav-link <?php echo isActive('penilaian') ? 'active' : ''; ?>"
+           href="index.php?controller=penilaian&action=index">
+          <i class="fas fa-clipboard-check menu-icon fa-sm"></i>
+          <span class="menu-title">Penilaian</span>
+        </a>
+      </li>
 
-    <?php endif; ?>
-
-    <!-- ==========================================
-         MENU KHUSUS STAFF
-         ========================================== -->
-    <?php if (hasRole(['admin', 'kepala_dinas', 'staff'])): ?>
-
-      <!-- Placeholder untuk menu staff lainnya -->
-      <!-- Menu akan ditambahkan nanti -->
+      <!-- LAPORAN -->
+      <li class="nav-item">
+        <a class="nav-link <?php echo isActive('laporan') ? 'active' : ''; ?>"
+           href="index.php?controller=laporan&action=index">
+          <i class="fas fa-file-pdf menu-icon fa-sm"></i>
+          <span class="menu-title">Laporan</span>
+        </a>
+      </li>
 
     <?php endif; ?>
 
@@ -99,23 +155,6 @@ function getDashboardUrl()
          MENU LOGOUT (SEMUA ROLE)
          ========================================== -->
     <?php if (hasRole(['admin', 'kepala_dinas', 'staff'])): ?>
-      <li class="nav-item mt-4">
-        <div class="sidebar-user-actions">
-          <div class="user-details">
-            <div class="d-flex align-items-center mb-2">
-              <i class="fas fa-user-circle fa-2x mr-2"></i>
-              <div>
-                <p class="font-weight-bold mb-0"><?= htmlspecialchars($_SESSION['nama_lengkap'] ?? 'User') ?></p>
-                <p class="small mb-0">
-                  <i class="fas fa-shield-alt mr-1"></i>
-                  <?= ucfirst($_SESSION['role'] ?? 'guest') ?>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-
       <li class="nav-item">
         <a class="nav-link" href="index.php?controller=<?= $_SESSION['role'] ?? 'auth' ?>&action=logout">
           <i class="fas fa-sign-out-alt menu-icon fa-sm"></i>
@@ -167,6 +206,35 @@ function getDashboardUrl()
   .nav-link:hover .menu-icon {
     color: #7c3aed;
   }
+
+  /* Submenu styling */
+  .sub-menu {
+    background-color: #f9fafb;
+    padding-left: 20px;
+  }
+
+  .sub-menu .nav-link {
+    padding-left: 40px;
+    font-size: 0.9rem;
+  }
+
+  .sub-menu .nav-link:hover {
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+
+  .sub-menu .nav-link.active {
+    background-color: rgba(79, 70, 229, 0.1);
+    border-left: 2px solid #7c3aed;
+  }
+
+  /* Chevron rotation when collapsed */
+  [data-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+  }
+
+  .fa-chevron-down {
+    transition: transform 0.3s ease;
+  }
 </style>
 
 <script>
@@ -181,6 +249,42 @@ function getDashboardUrl()
           document.body.classList.remove('sidebar-icon-only');
         }
       });
+    });
+
+    // Menangani collapse Master Data menu
+    const collapseLinks = document.querySelectorAll('[data-toggle="collapse"]');
+    collapseLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
+
+        if (target) {
+          // Toggle aria-expanded
+          const isExpanded = this.getAttribute('aria-expanded') === 'true';
+          this.setAttribute('aria-expanded', !isExpanded);
+
+          // Toggle collapse
+          if (isExpanded) {
+            target.classList.remove('show');
+          } else {
+            target.classList.add('show');
+          }
+        }
+      });
+    });
+
+    // Pastikan submenu terbuka jika salah satu itemnya aktif
+    const activeSubLinks = document.querySelectorAll('.sub-menu .nav-link.active');
+    activeSubLinks.forEach(function(link) {
+      const collapse = link.closest('.collapse');
+      if (collapse) {
+        collapse.classList.add('show');
+        const trigger = document.querySelector('[href="#' + collapse.id + '"]');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      }
     });
   });
 </script>

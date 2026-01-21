@@ -85,7 +85,7 @@
                 <!-- Charts & Tables -->
                 <div class="row">
                   <!-- Top Layanan Table -->
-                  <div class="col-lg-6 grid-margin stretch-card">
+                  <div class="col-sm-12 grid-margin stretch-card">
                     <div class="card">
                       <div class="card-body">
                         <h4 class="card-title">Top 5 Layanan Terbaik</h4>
@@ -180,27 +180,25 @@
                               <table class="table table-striped">
                                 <thead>
                                   <tr>
-                                    <th>Ranking</th>
                                     <th>Kode Layanan</th>
                                     <th>Nama Layanan</th>
-                                    <th>Nilai Akhir</th>
-                                    <th>Periode</th>
+                                    <th>Nilai SMART</th>
+                                    <th>Tanggal Perhitungan</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <?php if (!empty($data['activities']['hasil_smart'])): ?>
                                     <?php foreach ($data['activities']['hasil_smart'] as $hasil): ?>
                                     <tr>
-                                      <td><span class="badge badge-info"><?= $hasil['ranking'] ?></span></td>
                                       <td><?= htmlspecialchars($hasil['kode_alternatif']) ?></td>
                                       <td><?= htmlspecialchars($hasil['nama_layanan']) ?></td>
-                                      <td><span class="badge badge-success"><?= number_format($hasil['nilai_akhir'], 4) ?></span></td>
-                                      <td><?= date('d/m/Y', strtotime($hasil['periode'])) ?></td>
+                                      <td><span class="badge badge-success"><?= number_format($hasil['nilai_smart'], 4) ?></span></td>
+                                      <td><?= date('d/m/Y H:i', strtotime($hasil['tanggal_perhitungan'])) ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                   <?php else: ?>
                                     <tr>
-                                      <td colspan="5" class="text-center text-muted">Belum ada hasil perhitungan</td>
+                                      <td colspan="4" class="text-center text-muted">Belum ada hasil perhitungan</td>
                                     </tr>
                                   <?php endif; ?>
                                 </tbody>
@@ -236,8 +234,8 @@
                             </a>
                           </div>
                           <div class="col-md-3">
-                            <a href="index.php?controller=smart&action=index" class="btn btn-gradient-warning btn-block">
-                              <i class="fas fa-calculator mr-2"></i>Hitung SMART
+                            <a href="index.php?controller=hasil&action=index" class="btn btn-gradient-warning btn-block">
+                              <i class="fas fa-calculator mr-2"></i>Hasil SMART
                             </a>
                           </div>
                         </div>
