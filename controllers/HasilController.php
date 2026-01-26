@@ -18,10 +18,11 @@ class HasilController
             exit;
         }
 
-        // Role check - admin dan staff yang boleh akses
-        if ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff') {
+        // Role check - hanya admin yang boleh akses
+        $allowedRoles = ['admin'];
+        if (!in_array($_SESSION['role'], $allowedRoles)) {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
-            header('Location: index.php?controller=admin&action=index');
+            header('Location: index.php?controller=auth&action=index');
             exit;
         }
 

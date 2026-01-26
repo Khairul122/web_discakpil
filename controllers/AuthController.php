@@ -79,7 +79,7 @@ class AuthController
                 header('Location: index.php?controller=staff&action=index');
                 break;
             default:
-                header('Location: index.php?controller=dashboard&action=index');
+                header('Location: index.php?controller=auth&action=logout');
         }
         exit;
     }
@@ -103,7 +103,18 @@ class AuthController
 
         if (!in_array($_SESSION['role'], $allowedRoles)) {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
-            header('Location: index.php?controller=dashboard&action=index');
+            // Redirect berdasarkan role user yang sedang login
+            $role = $_SESSION['role'] ?? '';
+            switch ($role) {
+                case 'admin':
+                    header('Location: index.php?controller=admin&action=index');
+                    break;
+                case 'kepala_dinas':
+                    header('Location: index.php?controller=kepalaDinas&action=index');
+                    break;
+                default:
+                    header('Location: index.php?controller=auth&action=index');
+            }
             exit;
         }
 

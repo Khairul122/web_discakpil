@@ -44,7 +44,8 @@ function getDashboardUrl()
         case 'staff':
             return 'index.php?controller=staff&action=index';
         default:
-            return 'index.php?controller=dashboard&action=index';
+            // Default fallback ke landing page jika role tidak dikenali
+            return 'index.php?controller=auth&action=logout';
     }
 }
 ?>

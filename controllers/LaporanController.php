@@ -18,10 +18,11 @@ class LaporanController
             exit;
         }
 
-        // Role check - admin dan staff yang boleh akses
-        if ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff') {
+        // Role check - admin dan kepala_dinas yang boleh akses
+        $allowedRoles = ['admin', 'kepala_dinas'];
+        if (!in_array($_SESSION['role'], $allowedRoles)) {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
-            header('Location: index.php?controller=admin&action=index');
+            header('Location: index.php?controller=auth&action=index');
             exit;
         }
 
@@ -455,7 +456,7 @@ class LaporanController
         $tanggal_indonesia = str_replace(array_keys($bulan_indonesia), array_values($bulan_indonesia), $tanggal_inggris);
 
         echo '<div class="signature-section">
-                <div class="location-date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sumatera Barat, ' . $tanggal_indonesia . '</div>
+                <div class="location-date">&nbsp;Sumatera Barat, ' . $tanggal_indonesia . '</div>
                 <table class="signature-table">
                     <tr>
                         <td width="50%" style="vertical-align: top; padding-right: 20px;">
@@ -492,4 +493,3 @@ class LaporanController
         return ob_get_clean();
     }
 }
-?>

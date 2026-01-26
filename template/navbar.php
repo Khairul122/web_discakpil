@@ -1,6 +1,6 @@
 <?php
 /**
- * Navbar - Koperasi Syariah
+ * Navbar - DISDUKCAPIL Kota Padang
  * Menampilkan navigasi atas dengan informasi user
  */
 
@@ -9,20 +9,16 @@ date_default_timezone_set("Asia/Jakarta");
 
 // Ambil data user dari session
 $nama = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : (isset($_SESSION['username']) ? $_SESSION['username'] : 'Pengguna');
-$email = isset($_SESSION['email']) ? $_SESSION['email'] : 'email@example.com';
 $userRole = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
-$userLevel = isset($_SESSION['level']) ? $_SESSION['level'] : '';
 
 // Tentukan display role
 $roleDisplay = 'Guest';
-if ($userRole === 'petugas') {
-    if ($userLevel === 'Admin') {
-        $roleDisplay = 'Administrator';
-    } elseif ($userLevel === 'Bendahara') {
-        $roleDisplay = 'Bendahara';
-    }
-} elseif ($userRole === 'anggota') {
-    $roleDisplay = 'Anggota';
+if ($userRole === 'admin') {
+    $roleDisplay = 'Administrator';
+} elseif ($userRole === 'kepala_dinas') {
+    $roleDisplay = 'Kepala Dinas';
+} elseif ($userRole === 'staff') {
+    $roleDisplay = 'Staff';
 }
 ?>
 
@@ -51,7 +47,6 @@ if ($userRole === 'petugas') {
               <i class="fas fa-user" style="font-size: 28px; color: white;"></i>
             </div>
             <p class="mb-1 mt-3 font-weight-semibold"><?= htmlspecialchars($nama) ?></p>
-            <p class="mb-1 text-muted small"><?= htmlspecialchars($email) ?></p>
             <p class="mb-0 text-muted small">
               Role: <span class="text-primary font-weight-semibold"><?= htmlspecialchars($roleDisplay) ?></span>
             </p>
@@ -59,42 +54,22 @@ if ($userRole === 'petugas') {
 
           <div class="dropdown-divider"></div>
 
-          <?php if ($userRole === 'petugas' && $userLevel === 'Admin'): ?>
-            <!-- Menu Profil Admin -->
-            <a class="dropdown-item" href="index.php?controller=profileadmin&action=index">
-              <i class="dropdown-item-icon mdi mdi-account text-primary me-2"></i>
-              Kelola Profil
-            </a>
-            <a class="dropdown-item" href="index.php?controller=dashboard&action=admin">
-              <i class="dropdown-item-icon mdi mdi-view-dashboard text-primary me-2"></i>
-              Dashboard
-            </a>
-
-          <?php elseif ($userRole === 'petugas' && $userLevel === 'Bendahara'): ?>
-            <!-- Menu Profil Bendahara -->
-            <a class="dropdown-item" href="index.php?controller=profilepetugas&action=index">
-              <i class="dropdown-item-icon mdi mdi-account text-primary me-2"></i>
-              Kelola Profil
-            </a>
-            <a class="dropdown-item" href="index.php?controller=dashboard&action=bendahara">
-              <i class="dropdown-item-icon mdi mdi-view-dashboard text-primary me-2"></i>
-              Dashboard
-            </a>
-
-          <?php elseif ($userRole === 'anggota'): ?>
-            <!-- Menu Profil Anggota -->
-            <a class="dropdown-item" href="index.php?controller=profile&action=index">
-              <i class="dropdown-item-icon mdi mdi-account text-primary me-2"></i>
-              Profil Saya
-            </a>
-            <a class="dropdown-item" href="index.php?controller=dashboard&action=anggota">
-              <i class="dropdown-item-icon mdi mdi-view-dashboard text-primary me-2"></i>
-              Dashboard
-            </a>
-
+          <?php if (in_array($userRole, ['admin', 'kepala_dinas', 'staff'])): ?>
+            <!-- Menu Dashboard untuk user yang sudah login -->
+            <?php if ($userRole === 'admin'): ?>
+              <a class="dropdown-item" href="index.php?controller=admin&action=index">
+                <i class="dropdown-item-icon mdi mdi-view-dashboard text-primary me-2"></i>
+                Dashboard
+              </a>
+            <?php elseif ($userRole === 'kepala_dinas'): ?>
+              <a class="dropdown-item" href="index.php?controller=kepalaDinas&action=index">
+                <i class="dropdown-item-icon mdi mdi-view-dashboard text-primary me-2"></i>
+                Dashboard
+              </a>
+            <?php endif; ?>
           <?php else: ?>
             <!-- Menu Guest / Belum Login -->
-            <a class="dropdown-item" href="index.php?controller=auth&action=login">
+            <a class="dropdown-item" href="index.php?controller=auth&action=index">
               <i class="dropdown-item-icon mdi mdi-login text-primary me-2"></i>
               Login
             </a>
@@ -102,8 +77,8 @@ if ($userRole === 'petugas') {
 
           <div class="dropdown-divider"></div>
 
-          <?php if ($userRole !== 'guest'): ?>
-            <a class="dropdown-item" href="index.php?controller=auth&action=logout">
+          <?php if (in_array($userRole, ['admin', 'kepala_dinas', 'staff'])): ?>
+            <a class="dropdown-item" href="index.php?controller=<?= $userRole === 'admin' ? 'admin' : 'kepalaDinas' ?>&action=logout">
               <i class="dropdown-item-icon mdi mdi-power text-danger me-2"></i>
               <span class="text-danger">Sign Out</span>
             </a>

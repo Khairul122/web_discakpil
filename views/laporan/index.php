@@ -362,15 +362,6 @@
     function generatePDF() {
       Swal.fire({
         title: 'Generate PDF Laporan?',
-        html: '<p class="text-muted">Format: Koperasi Style</p>' +
-              '<ul class="text-left" style="font-size: 0.9rem; margin-top: 1rem;">' +
-              '<li>Header: LAPORAN KEPUASAN MASYARAKAT</li>' +
-              '<li>Sub-Header: DISDUKCAPIL KOTA PADANG</li>' +
-              '<li>Warna Header: Hijau (#006633)</li>' +
-              '<li>Font: Arial/Helvetica</li>' +
-              '<li>Tabel: No, Nama, A1-A..., Hasil SMART</li>' +
-              '<li>Dua tanda tangan: Kepala Dinas & Petugas</li>' +
-              '</ul>',
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#006633',

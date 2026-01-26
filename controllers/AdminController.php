@@ -19,7 +19,7 @@ class AdminController
 
         if ($_SESSION['role'] !== 'admin') {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
-            header('Location: index.php?controller=dashboard&action=index');
+            header('Location: index.php?controller=auth&action=index');
             exit;
         }
 

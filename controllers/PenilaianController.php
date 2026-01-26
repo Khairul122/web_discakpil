@@ -18,10 +18,11 @@ class PenilaianController
             exit;
         }
 
-        // Role check - admin dan staff yang boleh akses
-        if ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff') {
+        // Role check - admin, kepala_dinas, dan staff yang boleh akses
+        $allowedRoles = ['admin', 'kepala_dinas', 'staff'];
+        if (!in_array($_SESSION['role'], $allowedRoles)) {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
-            header('Location: index.php?controller=admin&action=index');
+            header('Location: index.php?controller=auth&action=index');
             exit;
         }
 

@@ -21,7 +21,7 @@ class KepalaDinasController
         $allowedRoles = ['admin', 'kepala_dinas'];
         if (!in_array($_SESSION['role'], $allowedRoles)) {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
-            header('Location: index.php?controller=dashboard&action=index');
+            header('Location: index.php?controller=auth&action=index');
             exit;
         }
 
