@@ -320,9 +320,8 @@ class LaporanController
 
         echo '<div class="kop-surat-container">
                 <div class="kop-surat">
-                    <div class="kop-title" style="padding-top: 20px;">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div>
-                    <div class="kop-subtitle">KOTA PADANG</div>
-                    <div class="kop-alamat">Jl. Jend. Sudirman Exs SMAN 1 No.1, Kp. Jao, Kec. Padang Bar., Kota Padang, Sumatera Barat 25136</div>
+                    <div class="kop-title" style="padding-top: 20px; font-size: 18pt;">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL <br> KOTA PADANG</div>
+                    <div class="kop-alamat" style="padding-top: 10px">Jl. Jend. Sudirman Exs SMAN 1 No.1, Kp. Jao, Kec. Padang Bar., Kota Padang, Sumatera Barat 25136</div>
                 </div>
                 <div class="garis-kop"></div>
                 <div class="judul-laporan">
@@ -456,7 +455,7 @@ class LaporanController
         $tanggal_indonesia = str_replace(array_keys($bulan_indonesia), array_values($bulan_indonesia), $tanggal_inggris);
 
         echo '<div class="signature-section">
-                <div class="location-date">&nbsp;Sumatera Barat, ' . $tanggal_indonesia . '</div>
+                <div class="location-date">&nbsp;&nbsp;&nbsp;Padang, ' . $tanggal_indonesia . '</div>
                 <table class="signature-table">
                     <tr>
                         <td width="50%" style="vertical-align: top; padding-right: 20px;">
@@ -465,7 +464,7 @@ class LaporanController
                             Pencatatan Sipil Kota Padang<br><br>
                             <div class="ttd-space"></div>
                             <div class="ttd-container">
-                                <span class="nama-pejabat">' . $nama_kepala_dinas . '</span><br>
+                                <span class="nama-pejabat">' .  $nama_petugas. '</span><br>
                                 NIP. 19800101 200001 1 001
                             </div>
                         </td>
@@ -475,7 +474,7 @@ class LaporanController
                             DISDUKCAPIL Kota Padang<br><br>
                             <div class="ttd-space"></div>
                             <div class="ttd-container">
-                                <span class="nama-pejabat">' . $nama_petugas . '</span><br>
+                                <span class="nama-pejabat">' . $nama_kepala_dinas . '</span><br>
                                 NIP. 19900101 201001 2 002
                             </div>
                         </td>

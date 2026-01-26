@@ -379,7 +379,7 @@
                         <h2 class="text-3xl font-black mb-2 gradient-text">
                             Selamat Datang
                         </h2>
-                        <p class="text-gray-600">Silakan login untuk mengakses dashboard</p>
+                        <p class="text-gray-600">Silakan login</p>
                     </div>
 
                     <?php if (isset($_SESSION['error'])): ?>
