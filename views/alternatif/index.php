@@ -1,824 +1,99 @@
-<?php include('template/header.php'); ?>
+<?php $page_title = 'Kelola Layanan - DISDUKCAPIL Kota Padang'; ?>
+<?php include('template/layout_admin_head.php'); ?>
+<?php include('template/layout_admin_chrome.php'); ?>
 
-<body class="with-welcome-text">
-  <div class="container-scroller">
-    <?php include 'template/navbar.php'; ?>
-    <div class="container-fluid page-body-wrapper">
-      <?php include 'template/setting_panel.php'; ?>
-      <?php include 'template/sidebar.php'; ?>
-      <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-sm-12">
-
-              <!-- Modern Page Header with Animation -->
-              <div class="home-header mb-4" data-aos="fade-down">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                  <div class="animated-title">
-                    <div class="d-flex align-items-center mb-2">
-                      <div class="title-icon mr-3">
-                        <i class="fas fa-clipboard-list fa-2x text-primary"></i>
-                      </div>
-                      <div>
-                        <h3 class="font-weight-bold mb-0">Kelola Layanan</h3>
-                        <p class="text-muted mb-0">Manajemen Data Layanan DISDUKCAPIL Kota Padang</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="action-buttons">
-                    <a href="index.php?controller=alternatif&action=create"
-                       class="btn btn-modern-primary btn-lg shadow-sm hover-lift"
-                       data-aos="zoom-in"
-                       data-aos-delay="100">
-                      <i class="fas fa-plus mr-2"></i>Tambah Layanan
-                    </a>
-                  </div>
-                </div>
-
-                <!-- Alert Messages with Animation -->
-                <?php if (isset($_SESSION['error'])): ?>
-                  <div class="alert alert-modern-danger alert-dismissible fade show" role="alert" data-aos="slide-down">
-                    <div class="alert-content">
-                      <div class="alert-icon">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i>
-                      </div>
-                      <div class="alert-message">
-                        <strong>Error!</strong>
-                        <p class="mb-0"><?= $_SESSION['error'] ?></p>
-                      </div>
-                    </div>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <?php unset($_SESSION['error']); endif; ?>
-
-                <?php if (isset($_SESSION['success'])): ?>
-                  <div class="alert alert-modern-success alert-dismissible fade show" role="alert" data-aos="slide-down">
-                    <div class="alert-content">
-                      <div class="alert-icon">
-                        <i class="fas fa-check-circle fa-2x"></i>
-                      </div>
-                      <div class="alert-message">
-                        <strong>Berhasil!</strong>
-                        <p class="mb-0"><?= $_SESSION['success'] ?></p>
-                      </div>
-                    </div>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <?php unset($_SESSION['success']); endif; ?>
-
-                <!-- Modern Statistics Cards -->
-                <div class="row mb-4">
-                  <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card-modern card-modern-primary">
-                      <div class="card-modern-body">
-                        <div class="card-modern-icon">
-                          <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <div class="card-modern-content">
-                          <h4 class="card-modern-title">Total Layanan</h4>
-                          <h2 class="card-modern-value"><?= $data['total'] ?? 0 ?></h2>
-                          <p class="card-modern-text">Layanan tersedia</p>
-                        </div>
-                        <div class="card-modern-chart">
-                          <div class="progress-chart">
-                            <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
-                              <circle cx="50" cy="50" r="45" fill="none" stroke="#fff" stroke-width="8"
-                                      stroke-dasharray="283" stroke-dashoffset="70" stroke-linecap="round"
-                                      class="progress-circle"/>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card-modern card-modern-success">
-                      <div class="card-modern-body">
-                        <div class="card-modern-icon">
-                          <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="card-modern-content">
-                          <h4 class="card-modern-title">Layanan Aktif</h4>
-                          <h2 class="card-modern-value"><?= $data['total'] ?? 0 ?></h2>
-                          <p class="card-modern-text">Semua aktif</p>
-                        </div>
-                        <div class="card-modern-chart">
-                          <div class="progress-chart">
-                            <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
-                              <circle cx="50" cy="50" r="45" fill="none" stroke="#fff" stroke-width="8"
-                                      stroke-dasharray="283" stroke-dashoffset="0" stroke-linecap="round"
-                                      class="progress-circle"/>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="card-modern card-modern-info">
-                      <div class="card-modern-body">
-                        <div class="card-modern-icon">
-                          <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <div class="card-modern-content">
-                          <h4 class="card-modern-title">Periode</h4>
-                          <h2 class="card-modern-value"><?= date('Y') ?></h2>
-                          <p class="card-modern-text"><?= date('F Y') ?></p>
-                        </div>
-                        <div class="card-modern-chart">
-                          <div class="progress-chart">
-                            <svg viewBox="0 0 100 100">
-                              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
-                              <circle cx="50" cy="50" r="45" fill="none" stroke="#fff" stroke-width="8"
-                                      stroke-dasharray="283" stroke-dashoffset="141" stroke-linecap="round"
-                                      class="progress-circle"/>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Modern Search & Filter -->
-                <div class="card-modern-search mb-4" data-aos="fade-up" data-aos-delay="400">
-                  <div class="card-modern-search-body">
-                    <form method="GET" action="index.php?controller=alternatif&action=index">
-                      <div class="row align-items-center">
-                        <div class="col-md-11">
-                          <div class="search-input-wrapper">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text"
-                                   name="keyword"
-                                   class="form-control search-input-modern"
-                                   placeholder="Cari berdasarkan kode, nama layanan, atau keterangan..."
-                                   value="<?= htmlspecialchars($data['keyword'] ?? '') ?>">
-                            <?php if (!empty($data['keyword'])): ?>
-                              <a href="index.php?controller=alternatif&action=index" class="search-clear">
-                                <i class="fas fa-times"></i>
-                              </a>
-                            <?php endif; ?>
-                          </div>
-                        </div>
-                        <div class="col-md-1">
-                          <button type="submit" class="btn btn-modern-search btn-block">
-                            <i class="fas fa-search"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-
-                <!-- Modern Table -->
-                <div class="card-modern-table" data-aos="fade-up" data-aos-delay="500">
-                  <div class="card-modern-table-body">
-                    <div class="table-responsive-modern">
-                      <table class="table-modern">
-                        <thead>
-                          <tr>
-                            <th width="5%">No</th>
-                            <th width="15%">Kode Layanan</th>
-                            <th width="25%">Nama Layanan</th>
-                            <th width="35%">Keterangan</th>
-                            <th width="15%">Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <?php if (!empty($data['alternatifs'])): ?>
-                            <?php $no = 1; foreach ($data['alternatifs'] as $alternatif): ?>
-                            <tr class="table-row-modern" data-aos="fade-in" data-aos-delay="<?= $no * 50 ?>">
-                              <td>
-                                <span class="row-number"><?= $no++ ?></span>
-                              </td>
-                              <td>
-                                <span class="badge-modern badge-modern-primary">
-                                  <?= htmlspecialchars($alternatif['kode_alternatif']) ?>
-                                </span>
-                              </td>
-                              <td>
-                                <div class="layanan-name">
-                                  <strong><?= htmlspecialchars($alternatif['nama_layanan']) ?></strong>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="layanan-desc">
-                                  <?= htmlspecialchars(substr($alternatif['keterangan'], 0, 100)) ?>
-                                  <?= strlen($alternatif['keterangan']) > 100 ? '...' : '' ?>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="action-buttons-modern">
-                                  <a href="index.php?controller=alternatif&action=edit&id=<?= $alternatif['id_alternatif'] ?>"
-                                     class="btn-modern-action btn-modern-edit"
-                                     title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                  </a>
-                                  <button onclick="confirmDelete(<?= $alternatif['id_alternatif'] ?>)"
-                                          class="btn-modern-action btn-modern-delete"
-                                          title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            <?php endforeach; ?>
-                          <?php else: ?>
-                            <tr class="empty-state-modern">
-                              <td colspan="5" class="text-center">
-                                <div class="empty-state-content">
-                                  <div class="empty-state-icon">
-                                    <i class="fas fa-inbox fa-4x"></i>
-                                  </div>
-                                  <h4 class="empty-state-title">Belum ada data layanan</h4>
-                                  <p class="empty-state-text">Mulai dengan menambahkan layanan baru</p>
-                                  <a href="index.php?controller=alternatif&action=create"
-                                     class="btn btn-modern-primary btn-lg">
-                                    <i class="fas fa-plus mr-2"></i>Tambah Layanan
-                                  </a>
-                                </div>
-                              </td>
-                            </tr>
-                          <?php endif; ?>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-gov bg-gradient-to-b from-gov-blue-600 to-gov-blue-800 text-white text-xl shadow-soft-raised-sm">
+      <i class="fas fa-clipboard-list"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Kelola Layanan</h1>
+      <p class="text-slate-500 text-sm">Manajemen Data Layanan DISDUKCAPIL Kota Padang</p>
     </div>
   </div>
-  <?php include 'template/script.php'; ?>
-
-  <!-- Custom Modern CSS -->
-  <style>
-    /* Modern Cards */
-    .card-modern {
-      background: linear-gradient(135deg, var(--card-bg-1) 0%, var(--card-bg-2) 100%);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .card-modern::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--card-accent-1), var(--card-accent-2));
-    }
-
-    .card-modern:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    .card-modern-primary {
-      --card-bg-1: #4a5568;
-      --card-bg-2: #2d3748;
-      --card-accent-1: #4a5568;
-      --card-accent-2: #2d3748;
-    }
-
-    .card-modern-success {
-      --card-bg-1: #718096;
-      --card-bg-2: #4a5568;
-      --card-accent-1: #718096;
-      --card-accent-2: #4a5568;
-    }
-
-    .card-modern-info {
-      --card-bg-1: #a0aec0;
-      --card-bg-2: #718096;
-      --card-accent-1: #a0aec0;
-      --card-accent-2: #718096;
-    }
-
-    .card-modern-body {
-      padding: 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .card-modern-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      color: #fff;
-    }
-
-    .card-modern-content {
-      color: #fff;
-    }
-
-    .card-modern-title {
-      font-size: 0.875rem;
-      font-weight: 500;
-      opacity: 0.9;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-modern-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-modern-text {
-      font-size: 0.75rem;
-      opacity: 0.8;
-      margin-bottom: 0;
-    }
-
-    .card-modern-chart {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      width: 80px;
-      height: 80px;
-    }
-
-    .progress-chart svg {
-      width: 100%;
-      height: 100%;
-      animation: rotate 2s linear infinite;
-    }
-
-    .progress-circle {
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-    }
-
-    @keyframes rotate {
-      from {
-        stroke-dashoffset: 283;
-      }
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-
-    /* Modern Search */
-    .card-modern-search {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-      overflow: hidden;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-    }
-
-    .card-modern-search-body {
-      padding: 1.5rem;
-    }
-
-    .search-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 1rem;
-      color: #a0aec0;
-      font-size: 1.1rem;
-      z-index: 10;
-    }
-
-    .search-input-modern {
-      padding: 0.875rem 3rem 0.875rem 3rem !important;
-      border: 2px solid #e2e8f0 !important;
-      border-radius: 12px !important;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      background: #f7fafc;
-    }
-
-    .search-input-modern:focus {
-      border-color: #4a5568 !important;
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
-    }
-
-    .search-clear {
-      position: absolute;
-      right: 1rem;
-      color: #a0aec0;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      z-index: 10;
-    }
-
-    .search-clear:hover {
-      color: #e53e3e;
-    }
-
-    .btn-modern-search {
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      border: none;
-      color: #fff;
-      padding: 0.875rem;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .btn-modern-search:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(74, 85, 104, 0.3);
-    }
-
-    /* Modern Table */
-    .card-modern-table {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-      overflow: hidden;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-    }
-
-    .card-modern-table-body {
-      padding: 0;
-    }
-
-    .table-responsive-modern {
-      overflow-x: auto;
-    }
-
-    .table-modern {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin-bottom: 0;
-    }
-
-    .table-modern thead th {
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      color: #fff;
-      font-weight: 600;
-      padding: 1rem 1.25rem;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.5px;
-      border: none;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .table-modern thead th:first-child {
-      border-top-left-radius: 16px;
-    }
-
-    .table-modern thead th:last-child {
-      border-top-right-radius: 16px;
-    }
-
-    .table-row-modern {
-      transition: all 0.3s ease;
-      animation: slideIn 0.3s ease forwards;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .table-row-modern:hover {
-      background: linear-gradient(90deg, rgba(74, 85, 104, 0.05) 0%, rgba(45, 55, 72, 0.05) 100%);
-      transform: scale(1.01);
-    }
-
-    .table-modern td {
-      padding: 1.25rem;
-      border-bottom: 1px solid #e2e8f0;
-      vertical-align: middle;
-    }
-
-    .table-modern tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .row-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      color: #fff;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.875rem;
-    }
-
-    .badge-modern {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .badge-modern-primary {
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(74, 85, 104, 0.3);
-    }
-
-    .layanan-name {
-      font-weight: 600;
-      color: #2d3748;
-    }
-
-    .layanan-desc {
-      color: #718096;
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-
-    .action-buttons-modern {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .btn-modern-action {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn-modern-edit {
-      background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(113, 128, 150, 0.3);
-    }
-
-    .btn-modern-edit:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 16px rgba(113, 128, 150, 0.4);
-    }
-
-    .btn-modern-delete {
-      background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(160, 174, 192, 0.3);
-    }
-
-    .btn-modern-delete:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 16px rgba(160, 174, 192, 0.4);
-    }
-
-    /* Empty State */
-    .empty-state-modern td {
-      padding: 3rem !important;
-    }
-
-    .empty-state-content {
-      text-align: center;
-    }
-
-    .empty-state-icon {
-      color: #cbd5e0;
-      margin-bottom: 1.5rem;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-
-    .empty-state-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #2d3748;
-      margin-bottom: 0.5rem;
-    }
-
-    .empty-state-text {
-      color: #718096;
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Modern Buttons */
-    .btn-modern-primary {
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      border: none;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(74, 85, 104, 0.3);
-    }
-
-    .btn-modern-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(74, 85, 104, 0.4);
-    }
-
-    .hover-lift {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .hover-lift:hover {
-      transform: translateY(-4px);
-    }
-
-    /* Modern Alerts */
-    .alert-modern-danger {
-      background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
-      border-left: 4px solid #e53e3e;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 4px 16px rgba(229, 62, 62, 0.15);
-    }
-
-    .alert-modern-success {
-      background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
-      border-left: 4px solid #38a169;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 4px 16px rgba(49, 151, 93, 0.15);
-    }
-
-    .alert-content {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    .alert-icon {
-      flex-shrink: 0;
-    }
-
-    .alert-modern-danger .alert-icon {
-      color: #e53e3e;
-    }
-
-    .alert-modern-success .alert-icon {
-      color: #38a169;
-    }
-
-    .alert-message {
-      flex: 1;
-    }
-
-    .alert-message strong {
-      display: block;
-      margin-bottom: 0.25rem;
-      font-size: 1rem;
-    }
-
-    .alert-modern-danger .alert-message strong {
-      color: #c53030;
-    }
-
-    .alert-modern-success .alert-message strong {
-      color: #2f855a;
-    }
-
-    .alert-message p {
-      margin-bottom: 0;
-      color: #4a5568;
-      font-size: 0.875rem;
-    }
-
-    /* Animated Title */
-    .title-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 24px rgba(74, 85, 104, 0.3);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .card-modern-chart {
-        display: none;
-      }
-
-      .action-buttons-modern {
-        flex-direction: column;
-      }
-
-      .btn-modern-action {
-        width: 100%;
-      }
-    }
-  </style>
-
-  <!-- Custom Modern Scripts -->
-  <script>
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      easing: 'ease-out-cubic',
-      once: true,
-      offset: 50
-    });
-
-    // Confirm delete with modern dialog
-    function confirmDelete(id) {
-      if (confirm('Apakah Anda yakin ingin menghapus layanan ini?')) {
-        window.location.href = 'index.php?controller=alternatif&action=delete&id=' + id;
-      }
-    }
-
-    // Auto-hide alerts with animation
-    setTimeout(function() {
-      $('.alert').addClass('fade-out');
-      setTimeout(function() {
-        $('.alert').fadeOut('slow');
-      }, 500);
-    }, 5000);
-
-    // Add smooth scroll behavior
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-
-    // Add loading animation to buttons
-    document.querySelectorAll('form').forEach(form => {
-      form.addEventListener('submit', function() {
-        const button = this.querySelector('button[type="submit"]');
-        if (button) {
-          button.disabled = true;
-          button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
-        }
-      });
-    });
-  </script>
-
-</body>
-
-</html>
+  <a href="index.php?controller=alternatif&action=create" class="btn-gov-primary">
+    <i class="fas fa-plus"></i> Tambah Layanan
+  </a>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
+  <div class="card-gov-stat card-gov-stat-blue">
+    <div class="card-gov-stat-icon"><i class="fas fa-clipboard-list"></i></div>
+    <p class="card-gov-stat-label">Total Layanan</p>
+    <p class="card-gov-stat-value"><?= $data['total'] ?? 0 ?></p>
+    <p class="card-gov-stat-sub">Layanan tersedia</p>
+  </div>
+  <div class="card-gov-stat card-gov-stat-green">
+    <div class="card-gov-stat-icon"><i class="fas fa-check-circle"></i></div>
+    <p class="card-gov-stat-label">Layanan Aktif</p>
+    <p class="card-gov-stat-value"><?= $data['total'] ?? 0 ?></p>
+    <p class="card-gov-stat-sub">Semua aktif</p>
+  </div>
+  <div class="card-gov-stat card-gov-stat-gold">
+    <div class="card-gov-stat-icon"><i class="fas fa-calendar-alt"></i></div>
+    <p class="card-gov-stat-label">Periode</p>
+    <p class="card-gov-stat-value"><?= date('Y') ?></p>
+    <p class="card-gov-stat-sub"><?= date('F Y') ?></p>
+  </div>
+</div>
+
+<div class="search-gov-wrap">
+  <form method="GET" action="index.php?controller=alternatif&action=index" class="flex flex-col sm:flex-row gap-3 w-full">
+    <div class="relative flex-1">
+      <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input type="text" name="keyword" class="input-gov !pl-11" placeholder="Cari berdasarkan kode, nama layanan, atau keterangan..." value="<?= htmlspecialchars($data['keyword'] ?? '') ?>">
+    </div>
+    <button type="submit" class="btn-gov-primary"><i class="fas fa-search"></i> Cari</button>
+    <?php if (!empty($data['keyword'])): ?>
+      <a href="index.php?controller=alternatif&action=index" class="btn-gov-secondary"><i class="fas fa-times"></i></a>
+    <?php endif; ?>
+  </form>
+</div>
+
+<div class="table-gov-wrap">
+  <div class="table-gov-scroll">
+    <table class="table-gov">
+      <thead>
+        <tr><th>No</th><th>Kode Layanan</th><th>Nama Layanan</th><th>Keterangan</th><th>Aksi</th></tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($data['alternatifs'])): ?>
+          <?php $no = 1; foreach ($data['alternatifs'] as $alternatif): ?>
+            <tr>
+              <td><span class="row-number-gov"><?= $no++ ?></span></td>
+              <td><span class="badge-gov-primary"><?= htmlspecialchars($alternatif['kode_alternatif']) ?></span></td>
+              <td class="font-semibold text-slate-800"><?= htmlspecialchars($alternatif['nama_layanan']) ?></td>
+              <td class="text-slate-500 text-sm">
+                <?= htmlspecialchars(substr($alternatif['keterangan'], 0, 100)) ?><?= strlen($alternatif['keterangan']) > 100 ? '...' : '' ?>
+              </td>
+              <td>
+                <div class="flex gap-2">
+                  <a href="index.php?controller=alternatif&action=edit&id=<?= $alternatif['id_alternatif'] ?>" class="btn-gov-icon-edit" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <button onclick="govConfirmDelete('index.php?controller=alternatif&action=delete&id=<?= $alternatif['id_alternatif'] ?>', {text:'Layanan ini akan dihapus secara permanen!'})" class="btn-gov-icon-delete" title="Hapus">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="5">
+              <div class="empty-gov">
+                <i class="fas fa-inbox text-4xl text-slate-300 mb-4"></i>
+                <h4 class="font-bold text-slate-700 mb-1">Belum ada data layanan</h4>
+                <p class="text-slate-500 text-sm mb-4">Mulai dengan menambahkan layanan baru</p>
+                <a href="index.php?controller=alternatif&action=create" class="btn-gov-primary"><i class="fas fa-plus"></i> Tambah Layanan</a>
+              </div>
+            </td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<?php include('template/layout_admin_foot.php'); ?>

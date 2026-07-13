@@ -26,7 +26,7 @@ class PenilaianKuesionerController
     public function submit()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: index.php?controller=penilaianKesioner&action=index');
+            header('Location: index.php?controller=penilaianKuesioner&action=index');
             exit;
         }
 
@@ -38,7 +38,7 @@ class PenilaianKuesionerController
         // Validation responden data
         if (empty($nama_responden) || $usia <= 0 || $usia > 120 || empty($pekerjaan)) {
             $_SESSION['error'] = 'Data diri tidak lengkap atau tidak valid!';
-            header('Location: index.php?controller=penilaianKesioner&action=index');
+            header('Location: index.php?controller=penilaianKuesioner&action=index');
             exit;
         }
 
@@ -78,7 +78,7 @@ class PenilaianKuesionerController
                 }
             } else {
                 $_SESSION['error'] = 'Gagal membuat data responden!';
-                header('Location: index.php?controller=penilaianKesioner&action=index');
+                header('Location: index.php?controller=penilaianKuesioner&action=index');
                 exit;
             }
         }
@@ -130,7 +130,7 @@ class PenilaianKuesionerController
                 // Check if sub kriteria exists
                 if (!$this->penilaianKuesionerModel->checkSubKriteriaExists($id_sub)) {
                     $_SESSION['error'] = 'Sub kriteria tidak valid!';
-                    header('Location: index.php?controller=penilaianKesioner&action=index');
+                    header('Location: index.php?controller=penilaianKuesioner&action=index');
                     exit;
                 }
 
@@ -148,7 +148,7 @@ class PenilaianKuesionerController
             $_SESSION['error'] = 'Anda belum memberikan penilaian untuk layanan manapun!';
         }
 
-        header('Location: index.php?controller=penilaianKesioner&action=index');
+        header('Location: index.php?controller=penilaianKuesioner&action=index');
         exit;
     }
 }
