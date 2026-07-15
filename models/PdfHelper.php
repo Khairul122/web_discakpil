@@ -5,7 +5,7 @@ class PdfHelper
 {
     public static function newPdf(string $title): TCPDF
     {
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, 'F4', true, 'UTF-8', false);
+        $pdf = new TCPDF('L', PDF_UNIT, 'F4', true, 'UTF-8', false);
 
         $pdf->SetCreator('DISDUKCAPIL Kota Padang');
         $pdf->SetAuthor('DISDUKCAPIL');
@@ -63,19 +63,21 @@ class PdfHelper
     public static function kopSurat(string $judul, string $periode = ''): string
     {
         $periode_html = $periode !== '' ? '<div class="periode" style="font-size: 10pt; color: #333333; margin-top: 3px;">' . htmlspecialchars($periode) . '</div>' : '';
+        $logo_path = realpath('assets/images/logo-pdf.png');
 
         return '<table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 2px;">
                     <tr>
                         <td width="15%" style="vertical-align: middle; text-align: center; border: none;">
-                            <img src="assets/images/logo_kemendagri.png" width="60" height="60" />
+                            <img src="' . $logo_path . '" height="80" />
                         </td>
-                        <td width="85%" style="text-align: center; border: none; vertical-align: middle;">
-                            <span style="font-size: 12pt; font-weight: bold; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 1.2;">KEMENTERIAN DALAM NEGERI</span><br>
-                            <span style="font-size: 13pt; font-weight: bold; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 1.2;">REPUBLIK INDONESIA</span><br>
-                            <span style="font-size: 11pt; font-weight: bold; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 1.2;">DIREKTORAT JENDERAL KEPENDUDUKAN DAN PENCATATAN SIPIL</span><br>
-                            <span style="font-size: 7.5pt; font-family: Arial, Helvetica, sans-serif; color: #333333; line-height: 1.3;">Jalan Raya Pasar Minggu KM. 19 Jakarta Selatan 12072</span><br>
-                            <span style="font-size: 7.5pt; font-family: Arial, Helvetica, sans-serif; color: #333333; line-height: 1.3;">Telp. (021) 79194075 (Hunting) Fax (021) 780655, 79499770</span>
+                        <td width="70%" style="text-align: center; border: none; vertical-align: middle;">
+                            <span style="font-size: 24pt; font-weight: bold; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 1.2;">KEMENTERIAN DALAM NEGERI</span><br>
+                            <span style="font-size: 22pt; font-weight: bold; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 1.2;">REPUBLIK INDONESIA</span><br>
+                            <span style="font-size: 16pt; font-weight: bold; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 1.2;">DIREKTORAT JENDERAL KEPENDUDUKAN DAN PENCATATAN SIPIL</span><br>
+                            <span style="font-size: 10pt; font-family: Arial, Helvetica, sans-serif; color: #333333; line-height: 1.3;">Jalan Raya Pasar Minggu KM. 19 Jakarta Selatan 12072</span><br>
+                            <span style="font-size: 10pt; font-family: Arial, Helvetica, sans-serif; color: #333333; line-height: 1.3;">Telp. (021) 79194075 (Hunting) Fax (021) 780655, 79499770</span>
                         </td>
+                        <td width="15%" style="vertical-align: middle; border: none;"></td>
                     </tr>
                 </table>
                 <hr style="border: none; border-top: 2.5px double #000000; height: 0px; margin-top: 2px; margin-bottom: 12px;" />
@@ -119,7 +121,7 @@ class PdfHelper
         return '<div class="signature-section" style="margin-top: 30px;">
                     <table class="signature-table" style="width: 100%; border: none;">
                         <tr>
-                            <td width="55%" style="vertical-align: top; text-align: left; border: none;">
+                            <td width="45%" style="vertical-align: top; text-align: left; border: none;">
                                 <strong>Mengetahui,</strong><br>
                                 <strong>Kepala Dinas</strong><br>
                                 Dinas Kependudukan dan Pencatatan Sipil<br>
@@ -128,7 +130,8 @@ class PdfHelper
                                 <span style="font-weight: bold; text-decoration: underline;">' . htmlspecialchars($nama_kepala_dinas) . '</span><br>
                                 NIP. 19720412 199803 1 002
                             </td>
-                            <td width="45%" style="vertical-align: top; text-align: left; border: none;">
+                            <td width="30%" style="border: none;"></td>
+                            <td width="25%" style="vertical-align: top; text-align: left; border: none;">
                                 Padang, ' . $tanggal . '<br>
                                 <strong>Petugas Pelayanan,</strong><br>
                                 Bagian Pelayanan<br>

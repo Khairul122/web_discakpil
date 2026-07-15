@@ -69,7 +69,7 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
        class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full lg:translate-x-0 transition-transform duration-300
               bg-white border-r border-slate-100 text-slate-700 flex flex-col shadow-soft-raised-lg">
   <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
-    <img src="assets/images/logo-pdf.png" alt="Logo DISDUKCAPIL Kota Padang" class="h-9 w-auto object-contain max-w-[170px]">
+    <img src="assets/images/logo-nonpdf.png" alt="Logo DISDUKCAPIL Kota Padang" class="h-9 w-auto object-contain max-w-[170px]">
     <button id="sidebarClose" type="button" class="ml-auto lg:hidden text-slate-400 hover:text-slate-650 min-h-[44px] min-w-[44px] flex items-center justify-center">
       <i class="fas fa-xmark"></i>
     </button>

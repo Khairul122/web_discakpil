@@ -171,29 +171,29 @@ class CetakController
         $nilai_per_responden_alternatif = $data['nilai_per_responden_alternatif'];
 
         $jumlah_alternatif = !empty($alternatifs) ? count($alternatifs) : 3;
-        $lebar_kolom_alternatif = ($jumlah_alternatif > 0) ? (60 / $jumlah_alternatif) : 20;
+        $lebar_kolom_alternatif = ($jumlah_alternatif > 0) ? (55 / $jumlah_alternatif) : 18;
 
         echo '<!DOCTYPE html><html><head><meta charset="UTF-8">' . PdfHelper::baseStyles() . '</head><body>';
         echo PdfHelper::kopSurat('LAPORAN KEPUASAN MASYARAKAT', 'Periode: ' . ($period_label ?? date('F Y')));
 
-        echo '<table cellpadding="6" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 9pt;">
+        echo '<table cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 9.5pt;">
                 <thead>
-                    <tr style="background-color: #eef2f7; color: #1e293b;">
-                        <th style="width: 8%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 8.5pt;">NO</th>
-                        <th style="width: 22%; font-weight: bold; text-align: left; border: 1px solid #cbd5e1; font-size: 8.5pt;">NAMA RESPONDEN</th>';
+                    <tr style="background-color: #f2f2f2; color: #000000;">
+                        <th style="width: 8%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9pt;">NO</th>
+                        <th style="width: 22%; font-weight: bold; text-align: left; border: 1px solid #000000; font-size: 9pt;">NAMA RESPONDEN</th>';
 
         if (!empty($alternatifs)) {
             foreach ($alternatifs as $alt) {
                 $kode = htmlspecialchars($alt['kode_alternatif'] ?? 'A');
-                echo '<th style="width: ' . $lebar_kolom_alternatif . '%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 8.5pt;">' . $kode . '</th>';
+                echo '<th style="width: ' . $lebar_kolom_alternatif . '%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9pt;">' . $kode . '</th>';
             }
         } else {
-            echo '<th style="width: 18%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 8.5pt;">A1</th>
-                  <th style="width: 18%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 8.5pt;">A2</th>
-                  <th style="width: 19%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 8.5pt;">A3</th>';
+            echo '<th style="width: 18%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9pt;">A1</th>
+                  <th style="width: 18%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9pt;">A2</th>
+                  <th style="width: 19%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9pt;">A3</th>';
         }
 
-        echo '      <th style="width: 15%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 8.5pt;">HASIL SMART</th>
+        echo '      <th style="width: 15%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9pt;">HASIL SMART</th>
                     </tr>
                 </thead>
                 <tbody>';
@@ -206,31 +206,30 @@ class CetakController
                 $id_responden = $responden['id_responden'];
                 $nilai_terbaik = $responden['nilai_smart_terbaik'];
                 $total_nilai += $nilai_terbaik;
-                $bg_color = ($no % 2 === 0) ? '#f8fafc' : '#ffffff';
 
-                echo '<tr style="background-color: ' . $bg_color . ';">
-                        <td style="width: 8%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">' . $no++ . '</td>
-                        <td style="width: 22%; text-align: left; border: 1px solid #cbd5e1; font-weight: 500; color: #1e293b;">' . htmlspecialchars($responden['nama_lengkap']) . '</td>';
+                echo '<tr>
+                        <td style="width: 8%; text-align: center; border: 1px solid #000000; color: #000000;">' . $no++ . '</td>
+                        <td style="width: 22%; text-align: left; border: 1px solid #000000; font-weight: bold; color: #000000;">' . htmlspecialchars($responden['nama_lengkap']) . '</td>';
 
                 if (!empty($alternatifs)) {
                     foreach ($alternatifs as $alt) {
                         $kode_alt = $alt['kode_alternatif'];
                         $nilai = $nilai_per_responden_alternatif[$id_responden][$kode_alt] ?? 0;
-                        echo '<td style="width: ' . $lebar_kolom_alternatif . '%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">' . number_format($nilai, 2, ',', '.') . '</td>';
+                        echo '<td style="width: ' . $lebar_kolom_alternatif . '%; text-align: center; border: 1px solid #000000; color: #000000;">' . number_format($nilai, 2, ',', '.') . '</td>';
                     }
                 } else {
-                    echo '<td style="width: 18%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">0,00</td>
-                          <td style="width: 18%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">0,00</td>
-                          <td style="width: 19%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">0,00</td>';
+                    echo '<td style="width: 18%; text-align: center; border: 1px solid #000000; color: #000000;">0,00</td>
+                          <td style="width: 18%; text-align: center; border: 1px solid #000000; color: #000000;">0,00</td>
+                          <td style="width: 19%; text-align: center; border: 1px solid #000000; color: #000000;">0,00</td>';
                 }
 
-                echo '    <td style="width: 15%; text-align: center; border: 1px solid #cbd5e1; font-weight: bold; color: #1e3a8a;">' . number_format($nilai_terbaik, 2, ',', '.') . '</td>
+                echo '    <td style="width: 15%; text-align: center; border: 1px solid #000000; font-weight: bold; color: #000000;">' . number_format($nilai_terbaik, 2, ',', '.') . '</td>
                       </tr>';
             }
         } else {
             echo '<tr>
-                    <td class="text-center" colspan="' . ($jumlah_alternatif + 3) . '" style="padding: 20px; border: 1px solid #cbd5e1;">
-                        <em style="color: #999;">Tidak ada data responden</em>
+                    <td class="text-center" colspan="' . ($jumlah_alternatif + 3) . '" style="padding: 20px; border: 1px solid #000000; color: #000000;">
+                        <em style="color: #666666;">Tidak ada data responden</em>
                     </td>
                   </tr>';
         }
@@ -238,20 +237,20 @@ class CetakController
         $rerata_smart = ($stats['rerata_smart'] ?? 0);
         $kesimpulan = ($rerata_smart >= 80) ? 'SANGAT BAIK' : (($rerata_smart >= 60) ? 'BAIK' : 'CUKUP');
 
-        echo '<tr style="background-color: #f1f5f9; font-weight: bold; color: #0f172a;">
-                    <td colspan="2" style="border: 1px solid #cbd5e1;">Total Nilai</td>
-                    <td colspan="' . $jumlah_alternatif . '" style="text-align: right; border: 1px solid #cbd5e1; padding-right: 15px;">' . number_format($total_nilai, 2, ',', '.') . '</td>
-                    <td style="text-align: center; border: 1px solid #cbd5e1;">' . number_format($total_nilai, 2, ',', '.') . '</td>
+        echo '<tr style="background-color: #f2f2f2; font-weight: bold; color: #000000;">
+                    <td colspan="2" style="border: 1px solid #000000;">Total Nilai</td>
+                    <td colspan="' . $jumlah_alternatif . '" style="text-align: right; border: 1px solid #000000; padding-right: 15px;">' . number_format($total_nilai, 2, ',', '.') . '</td>
+                    <td style="text-align: center; border: 1px solid #000000;">' . number_format($total_nilai, 2, ',', '.') . '</td>
                 </tr>
-                <tr style="background-color: #f1f5f9; font-weight: bold; color: #0f172a;">
-                    <td colspan="2" style="border: 1px solid #cbd5e1;">Rata-rata Nilai</td>
-                    <td colspan="' . $jumlah_alternatif . '" style="text-align: right; border: 1px solid #cbd5e1; padding-right: 15px;">' . number_format($rerata_smart, 2, ',', '.') . '</td>
-                    <td style="text-align: center; border: 1px solid #cbd5e1; color: #1e3a8a;">' . number_format($rerata_smart, 2, ',', '.') . '</td>
+                <tr style="background-color: #f2f2f2; font-weight: bold; color: #000000;">
+                    <td colspan="2" style="border: 1px solid #000000;">Rata-rata Nilai</td>
+                    <td colspan="' . $jumlah_alternatif . '" style="text-align: right; border: 1px solid #000000; padding-right: 15px;">' . number_format($rerata_smart, 2, ',', '.') . '</td>
+                    <td style="text-align: center; border: 1px solid #000000; color: #000000;">' . number_format($rerata_smart, 2, ',', '.') . '</td>
                 </tr>
-                <tr style="background-color: #f1f5f9; font-weight: bold; color: #0f172a;">
-                    <td colspan="2" style="border: 1px solid #cbd5e1;">Kesimpulan</td>
-                    <td colspan="' . $jumlah_alternatif . '" style="text-align: center; border: 1px solid #cbd5e1;">' . $kesimpulan . '</td>
-                    <td style="text-align: center; border: 1px solid #cbd5e1; color: #15803d;">' . $kesimpulan . '</td>
+                <tr style="background-color: #f2f2f2; font-weight: bold; color: #000000;">
+                    <td colspan="2" style="border: 1px solid #000000;">Kesimpulan</td>
+                    <td colspan="' . $jumlah_alternatif . '" style="text-align: center; border: 1px solid #000000;">' . $kesimpulan . '</td>
+                    <td style="text-align: center; border: 1px solid #000000; color: #000000;">' . $kesimpulan . '</td>
                 </tr>
               </tbody>
             </table>';
@@ -306,26 +305,25 @@ class CetakController
         if ($judul !== '') {
             echo '<div class="judul-laporan" style="margin-top: 20px; text-align: left;"><h1 style="font-size: 13pt; color: #1e293b;">' . htmlspecialchars($judul) . '</h1></div>';
         }
-        echo '<table cellpadding="6" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10pt;">
+        echo '<table cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10pt;">
                 <thead>
-                    <tr style="background-color: #eef2f7; color: #1e293b;">
-                        <th style="width: 8%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 9pt;">NO</th>
-                        <th style="width: 44%; font-weight: bold; text-align: left; border: 1px solid #cbd5e1; font-size: 9pt;">LAYANAN</th>
-                        <th style="width: 16%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 9pt;">JUMLAH PENILAI</th>
-                        <th style="width: 16%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 9pt;">RATA-RATA SMART</th>
-                        <th style="width: 16%; font-weight: bold; text-align: center; border: 1px solid #cbd5e1; font-size: 9pt;">MIN / MAX</th>
+                    <tr style="background-color: #f2f2f2; color: #000000;">
+                        <th style="width: 8%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9.5pt;">NO</th>
+                        <th style="width: 44%; font-weight: bold; text-align: left; border: 1px solid #000000; font-size: 9.5pt;">LAYANAN</th>
+                        <th style="width: 16%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9.5pt;">JUMLAH PENILAI</th>
+                        <th style="width: 16%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9.5pt;">RATA-RATA SMART</th>
+                        <th style="width: 16%; font-weight: bold; text-align: center; border: 1px solid #000000; font-size: 9.5pt;">MIN / MAX</th>
                     </tr>
                 </thead>
                 <tbody>';
         $no = 1;
         foreach ($ringkasan_layanan as $layanan) {
-            $bg_color = ($no % 2 === 0) ? '#f8fafc' : '#ffffff';
-            echo '<tr style="background-color: ' . $bg_color . ';">
-                    <td style="width: 8%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">' . $no++ . '</td>
-                    <td style="width: 44%; text-align: left; border: 1px solid #cbd5e1; font-weight: 500; color: #1e293b;">' . htmlspecialchars($layanan['nama_layanan']) . '</td>
-                    <td style="width: 16%; text-align: center; border: 1px solid #cbd5e1; color: #334155;">' . (int) $layanan['total_penilai'] . '</td>
-                    <td style="width: 16%; text-align: center; border: 1px solid #cbd5e1; font-weight: bold; color: #1e3a8a;">' . number_format($layanan['rerata_smart'] ?? 0, 2, ',', '.') . '</td>
-                    <td style="width: 16%; text-align: center; border: 1px solid #cbd5e1; color: #475569;">' . number_format($layanan['nilai_min'] ?? 0, 2, ',', '.') . ' / ' . number_format($layanan['nilai_max'] ?? 0, 2, ',', '.') . '</td>
+            echo '<tr>
+                    <td style="width: 8%; text-align: center; border: 1px solid #000000; color: #000000;">' . $no++ . '</td>
+                    <td style="width: 44%; text-align: left; border: 1px solid #000000; font-weight: bold; color: #000000;">' . htmlspecialchars($layanan['nama_layanan']) . '</td>
+                    <td style="width: 16%; text-align: center; border: 1px solid #000000; color: #000000;">' . (int) $layanan['total_penilai'] . '</td>
+                    <td style="width: 16%; text-align: center; border: 1px solid #000000; font-weight: bold; color: #000000;">' . number_format($layanan['rerata_smart'] ?? 0, 2, ',', '.') . '</td>
+                    <td style="width: 16%; text-align: center; border: 1px solid #000000; color: #000000;">' . number_format($layanan['nilai_min'] ?? 0, 2, ',', '.') . ' / ' . number_format($layanan['nilai_max'] ?? 0, 2, ',', '.') . '</td>
                   </tr>';
         }
         echo '  </tbody></table>';
