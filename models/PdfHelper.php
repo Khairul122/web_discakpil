@@ -82,7 +82,7 @@ class PdfHelper
                 </table>
                 <hr style="border: none; border-top: 2.5px double #000000; height: 0px; margin-top: 2px; margin-bottom: 12px;" />
                 <div class="judul-laporan" style="text-align: center; margin-top: 15px; margin-bottom: 15px;">
-                    <h1 style="font-size: 13pt; font-weight: bold; text-transform: uppercase; color: #000000;">' . htmlspecialchars($judul) . '</h1>
+                    <h1 style="font-size: 16pt; font-weight: bold; text-transform: uppercase; color: #000000;">' . htmlspecialchars($judul) . '</h1>
                     ' . $periode_html . '
                 </div>';
     }
