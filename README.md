@@ -3,7 +3,7 @@
 
 ---
 
-[![Official Logo](assets/images/logo-pdf.png)](file:///c:/laragon/www/web_discakpil/assets/images/logo-pdf.png)
+[![Official Logo](assets/images/logo-git.png)](file:///c:/laragon/www/web_discakpil/assets/images/logo-git.png)
 
 ## 📌 Deskripsi Proyek
 SI-IKM SMART adalah platform berbasis web yang dikembangkan khusus untuk **Dinas Kependudukan dan Pencatatan Sipil (DISDUKCAPIL) Kota Padang**. Aplikasi ini berfungsi untuk mengukur, menganalisis, dan melaporkan Indeks Kepuasan Masyarakat (IKM) terhadap layanan kependudukan secara digital dan otomatis menggunakan algoritma **SMART (Simple Multi-Attribute Rating Technique)**.
@@ -131,22 +131,21 @@ web_discakpil/
 
 ---
 
-## 👥 Layanan Dukungan Teknis (Support)
+## 👥 Layanan Dukungan Teknis (Support & Donation)
 
-Jika Anda menemui kendala instalasi, bug sistem, atau memerlukan bantuan kustomisasi lebih lanjut, tim support kami siap melayani Anda. Silakan hubungi narahubung support atau pindai kode QR di bawah ini:
+Jika Anda menemui kendala atau ingin memberikan dukungan donasi kepada pengembang, silakan hubungi narahubung support atau pindai kode QR donasi di bawah ini:
 
-| Hubungi Support | Pindai Kode QR Bantuan |
+| Hubungi Support | Pindai Kode QR Donasi |
 | :---: | :---: |
-| ![Support Team](assets/images/support.png) | ![Scan QR](assets/images/support-qr.png) |
-| **Tim Teknis Synectra**<br>✉️ support@synectra.id<br>📞 +62 822-xxxx-xxxx | **Scan WhatsApp/Telegram**<br>Layanan Bantuan Cepat 24/7 |
+| ![Support Team](assets/images/support.png) | ![Scan QR](assets/images/QR.jpeg) |
+| **Tim Teknis Synectra**<br>✉️ [synectra24@gmail.com](mailto:synectra24@gmail.com)<br>📞 [+62 888-0737-6359](https://wa.me/6288807376359) | **Scan QR Donasi Support**<br>Salurkan dukungan Anda secara langsung |
 
 ---
 
 ## 📜 Lisensi & Hak Cipta
-Aplikasi ini dikembangkan dan didistribusikan secara resmi di bawah lisensi:
+Aplikasi ini dikembangkan dan didistribusikan secara resmi di bawah lisensi berikut:
 
-**Developed & Maintained by:**
-### 🏢 Synectra Jasa Digital (PT Synectra Jasa Digital)
-*Solusi Integrasi Informasi dan Transformasi Digital Pemerintahan yang Terpercaya.*
+### 📄 MIT License
+Hak Cipta &copy; 2026 **Synectra Jasa Digital**.
 
-Hak Cipta &copy; 2026. Hak cipta dilindungi undang-undang. Seluruh kode sumber dan aset grafis di dalam sistem ini merupakan milik eksklusif instansi DISDUKCAPIL Kota Padang dan dikelola oleh pengembang mitra.
+Dengan ini diberikan izin, secara gratis, kepada siapa pun yang memperoleh salinan perangkat lunak ini dan file dokumentasi terkait (Perangkat Lunak), untuk mempergunakan Perangkat Lunak tanpa batasan, termasuk namun tidak terbatas pada hak untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan, mendistribusikan, mensublisensikan, dan/atau menjual salinan Perangkat Lunak, sesuai dengan ketentuan lisensi MIT.
