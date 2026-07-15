@@ -3,7 +3,7 @@
 
 ---
 
-[![Official Logo](assets/images/logo-git.png)](file:///c:/laragon/www/web_discakpil/assets/images/logo-git.png)
+[![Official Logo](assets/logo-git.png)](file:///c:/laragon/www/web_discakpil/assets/logo-git.png)
 
 ## 📌 Deskripsi Proyek
 SI-IKM SMART adalah platform berbasis web yang dikembangkan khusus untuk **Dinas Kependudukan dan Pencatatan Sipil (DISDUKCAPIL) Kota Padang**. Aplikasi ini berfungsi untuk mengukur, menganalisis, dan melaporkan Indeks Kepuasan Masyarakat (IKM) terhadap layanan kependudukan secara digital dan otomatis menggunakan algoritma **SMART (Simple Multi-Attribute Rating Technique)**.
