@@ -9,20 +9,14 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/app.css?v=<?= filemtime('assets/css/app.css') ?>" />
-  <link rel="shortcut icon" href="assets/images/favicon.png" />
+  <link rel="shortcut icon" href="assets/images/logo-pdf.png" />
 </head>
 
 <body class="bg-surface-page font-sans text-slate-700 min-h-screen flex flex-col">
   <header class="bg-white/90 backdrop-blur-md text-slate-800 shadow-soft-raised-sm sticky top-0 z-30 border-b border-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-      <a href="index.php?controller=landing&action=index" class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-gov bg-gradient-to-br from-gov-blue-800 to-gov-blue-700 shadow-soft-raised-sm text-white">
-          <i class="fas fa-building-columns text-sm"></i>
-        </div>
-        <div class="leading-tight">
-          <p class="font-sans font-bold text-sm text-slate-800">DISDUKCAPIL</p>
-          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Kota Padang</p>
-        </div>
+      <a href="index.php?controller=landing&action=index" class="flex items-center">
+        <img src="assets/images/logo-pdf.png" alt="Logo DISDUKCAPIL Kota Padang" class="h-10 w-auto object-contain">
       </a>
       <nav class="flex items-center gap-2 text-sm font-medium">
         <a href="index.php?controller=landing&action=index" class="btn-gov-ghost !text-slate-600 hover:!bg-slate-100 hover:!text-slate-900">Beranda</a>

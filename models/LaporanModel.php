@@ -15,7 +15,14 @@ class LaporanModel
         $this->conn = $connection;
     }
 
-    public function getLaporanFormal()
+    // Dibaca langsung dari hasil_akhir (matriks penuh responden x alternatif, hasil SmartCalculator
+    // via PenilaianController). Tidak lagi menghitung ulang dengan SQL mentah, supaya angka di laporan
+    // ini dijamin identik dengan angka di halaman Penilaian/Hasil (satu sumber kebenaran).
+    // Precondition: "Hitung Ulang SMART" harus sudah dijalankan setelah ada penilaian baru.
+    //
+    // $start_date/$end_date (format 'Y-m-d H:i:s', opsional): filter berdasarkan responden.tanggal_isi
+    // - kapan warga mengisi survei, bukan kapan SMART dihitung ulang.
+    public function getLaporanFormal($start_date = null, $end_date = null)
     {
         try {
             $query_alternatif = "SELECT id_alternatif, kode_alternatif, nama_layanan
@@ -25,36 +32,42 @@ class LaporanModel
             $stmt_alt->execute();
             $alternatifs = $stmt_alt->fetchAll(PDO::FETCH_ASSOC);
 
+            $has_filter = $start_date && $end_date;
+            $date_filter = $has_filter ? " AND r.tanggal_isi BETWEEN :start_date AND :end_date" : "";
+
             $query_responden = "SELECT
                                     r.id_responden,
                                     r.nama_lengkap,
                                     h.nilai_smart as nilai_smart_terbaik,
-                                    h.id_alternatif_terbaik,
+                                    h.id_alternatif,
                                     h.tanggal_perhitungan
                                   FROM {$this->table_hasil} h
                                   JOIN responden r ON h.id_responden = r.id_responden
+                                  WHERE h.is_terbaik = 1{$date_filter}
                                   ORDER BY r.nama_lengkap ASC";
             $stmt_resp = $this->conn->prepare($query_responden);
+            if ($has_filter) {
+                $stmt_resp->bindValue(':start_date', $start_date);
+                $stmt_resp->bindValue(':end_date', $end_date);
+            }
             $stmt_resp->execute();
             $responden_data = $stmt_resp->fetchAll(PDO::FETCH_ASSOC);
 
-            $query_nilai_alternatif = "SELECT
-                                          p.id_responden,
-                                          p.id_alternatif,
-                                          a.kode_alternatif,
-                                          SUM(sk.nilai_utility * k.bobot / 100) as nilai_smart
-                                        FROM {$this->table_penilaian} p
-                                        JOIN alternatif a ON p.id_alternatif = a.id_alternatif
-                                        JOIN kriteria k ON p.id_kriteria = k.id_kriteria
-                                        JOIN sub_kriteria sk ON p.id_sub = sk.id_sub
-                                        GROUP BY p.id_responden, p.id_alternatif, a.kode_alternatif
-                                        ORDER BY p.id_responden, a.kode_alternatif";
-            $stmt_nilai = $this->conn->prepare($query_nilai_alternatif);
-            $stmt_nilai->execute();
-            $nilai_alternatif_data = $stmt_nilai->fetchAll(PDO::FETCH_ASSOC);
+            $query_matrix = "SELECT h.id_responden, a.kode_alternatif, h.nilai_smart
+                              FROM {$this->table_hasil} h
+                              JOIN alternatif a ON h.id_alternatif = a.id_alternatif
+                              JOIN responden r ON h.id_responden = r.id_responden
+                              WHERE 1=1{$date_filter}";
+            $stmt_matrix = $this->conn->prepare($query_matrix);
+            if ($has_filter) {
+                $stmt_matrix->bindValue(':start_date', $start_date);
+                $stmt_matrix->bindValue(':end_date', $end_date);
+            }
+            $stmt_matrix->execute();
+            $matrix_data = $stmt_matrix->fetchAll(PDO::FETCH_ASSOC);
 
             $nilai_per_responden_alternatif = [];
-            foreach ($nilai_alternatif_data as $row) {
+            foreach ($matrix_data as $row) {
                 $nilai_per_responden_alternatif[$row['id_responden']][$row['kode_alternatif']] = $row['nilai_smart'];
             }
 
@@ -70,6 +83,42 @@ class LaporanModel
         }
     }
 
+    // Ringkasan kepuasan per layanan (output SKM inti): rata-rata skor SMART dari
+    // SEMUA responden yang menilai layanan tersebut, bukan hanya yang menobatkannya favorit.
+    //
+    // $start_date/$end_date (opsional): filter berdasarkan responden.tanggal_isi. Filter dipasang
+    // di klausa ON (bukan WHERE) supaya layanan yang tidak punya penilai pada periode itu tetap
+    // muncul dengan total_penilai=0 (LEFT JOIN tidak rusak oleh WHERE pada kolom sisi kanan).
+    public function getRingkasanPerLayanan($start_date = null, $end_date = null)
+    {
+        try {
+            $has_filter = $start_date && $end_date;
+            $join_filter = $has_filter
+                ? " AND h.id_responden IN (SELECT id_responden FROM responden WHERE tanggal_isi BETWEEN :start_date AND :end_date)"
+                : "";
+
+            $query = "SELECT a.id_alternatif, a.kode_alternatif, a.nama_layanan,
+                             COUNT(h.id_hasil) as total_penilai,
+                             AVG(h.nilai_smart) as rerata_smart,
+                             MIN(h.nilai_smart) as nilai_min,
+                             MAX(h.nilai_smart) as nilai_max
+                      FROM alternatif a
+                      LEFT JOIN {$this->table_hasil} h ON a.id_alternatif = h.id_alternatif{$join_filter}
+                      GROUP BY a.id_alternatif, a.kode_alternatif, a.nama_layanan
+                      ORDER BY rerata_smart DESC";
+            $stmt = $this->conn->prepare($query);
+            if ($has_filter) {
+                $stmt->bindValue(':start_date', $start_date);
+                $stmt->bindValue(':end_date', $end_date);
+            }
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Get ringkasan per layanan error: " . $e->getMessage());
+            return [];
+        }
+    }
+
     // Get laporan grouped by responden
     public function getLaporanByResponden($filter_responden = 0)
     {
@@ -82,13 +131,13 @@ class LaporanModel
                         COUNT(DISTINCT p.id_alternatif) as total_layanan_dinilai,
                         COUNT(p.id_penilaian) as total_penilaian,
                         h.nilai_smart as nilai_smart_terbaik,
-                        h.id_alternatif_terbaik,
+                        h.id_alternatif,
                         alt_terbaik.nama_layanan as layanan_terbaik,
                         h.tanggal_perhitungan
                      FROM responden r
                      LEFT JOIN {$this->table_penilaian} p ON r.id_responden = p.id_responden
-                     LEFT JOIN {$this->table_hasil} h ON r.id_responden = h.id_responden
-                     LEFT JOIN alternatif alt_terbaik ON h.id_alternatif_terbaik = alt_terbaik.id_alternatif
+                     LEFT JOIN {$this->table_hasil} h ON r.id_responden = h.id_responden AND h.is_terbaik = 1
+                     LEFT JOIN alternatif alt_terbaik ON h.id_alternatif = alt_terbaik.id_alternatif
                      WHERE 1=1";
 
             $params = [];
@@ -99,7 +148,7 @@ class LaporanModel
             }
 
             $query .= " GROUP BY r.id_responden, r.nama_lengkap, r.usia, r.pekerjaan,
-                          h.nilai_smart, h.id_alternatif_terbaik, alt_terbaik.nama_layanan, h.tanggal_perhitungan
+                          h.nilai_smart, h.id_alternatif, alt_terbaik.nama_layanan, h.tanggal_perhitungan
                        ORDER BY r.nama_lengkap ASC";
 
             $stmt = $this->conn->prepare($query);
@@ -145,141 +194,40 @@ class LaporanModel
         }
     }
 
-    // Get laporan by alternatif
-    public function getLaporanByAlternatif($filter_alternatif = 0)
-    {
-        try {
-            $query = "SELECT
-                        a.id_alternatif,
-                        a.nama_layanan,
-                        COUNT(DISTINCT p.id_responden) as total_responden,
-                        COUNT(p.id_penilaian) as total_penilaian,
-                        COUNT(DISTINCT h.id_responden) as total_memilih_terbaik,
-                        AVG(h.nilai_smart) as rata_rata_smart
-                     FROM alternatif a
-                     LEFT JOIN {$this->table_penilaian} p ON a.id_alternatif = p.id_alternatif
-                     LEFT JOIN {$this->table_hasil} h ON a.id_alternatif = h.id_alternatif_terbaik
-                     WHERE 1=1";
-
-            $params = [];
-
-            if ($filter_alternatif > 0) {
-                $query .= " AND a.id_alternatif = :id_alternatif";
-                $params[':id_alternatif'] = $filter_alternatif;
-            }
-
-            $query .= " GROUP BY a.id_alternatif, a.nama_layanan
-                       ORDER BY total_responden DESC";
-
-            $stmt = $this->conn->prepare($query);
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Get laporan by alternatif error: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    // Get laporan perhitungan SMART per responden
-    public function getLaporanSMART($id_responden)
-    {
-        try {
-            // Get detail penilaian
-            $penilaians = $this->getDetailPenilaianByResponden($id_responden);
-
-            if (empty($penilaians)) {
-                return false;
-            }
-
-            // Get all kriteria dengan bobot
-            require_once 'KriteriaModel.php';
-            $kriteriaModel = new KriteriaModel($this->conn);
-            $kriterias = $kriteriaModel->getAll();
-            $total_bobot = array_sum(array_column($kriterias, 'bobot'));
-
-            // Normalisasi bobot
-            $normalized_weights = [];
-            foreach ($kriterias as $k) {
-                $normalized_weights[$k['id_kriteria']] = $k['bobot'] / $total_bobot;
-            }
-
-            // Group penilaian by alternatif
-            $penilaian_by_alternatif = [];
-            foreach ($penilaians as $p) {
-                $penilaian_by_alternatif[$p['nama_layanan']][] = $p;
-            }
-
-            // Hitung SMART untuk setiap alternatif
-            $hasil_smart = [];
-            foreach ($penilaian_by_alternatif as $nama_layanan => $penilaian_list) {
-                $nilai_smart = 0;
-                $detail_kriteria = [];
-
-                foreach ($penilaian_list as $penilaian) {
-                    $bobot_normal = $normalized_weights[$penilaian['id_kriteria']];
-                    $nilai_utility = $penilaian['nilai_utility'];
-                    $kontribusi = $bobot_normal * $nilai_utility;
-                    $nilai_smart += $kontribusi;
-
-                    $detail_kriteria[] = [
-                        'kode_kriteria' => $penilaian['kode_kriteria'],
-                        'nama_kriteria' => $penilaian['nama_kriteria'],
-                        'bobot' => $penilaian['bobot'],
-                        'bobot_normal' => $bobot_normal,
-                        'nilai_utility' => $nilai_utility,
-                        'kontribusi' => $kontribusi
-                    ];
-                }
-
-                $hasil_smart[] = [
-                    'nama_layanan' => $nama_layanan,
-                    'nilai_smart' => $nilai_smart,
-                    'detail_kriteria' => $detail_kriteria
-                ];
-            }
-
-            // Sort by nilai_smart descending
-            usort($hasil_smart, function($a, $b) {
-                return $b['nilai_smart'] <=> $a['nilai_smart'];
-            });
-
-            // Add ranking
-            foreach ($hasil_smart as $index => &$hasil) {
-                $hasil['ranking'] = $index + 1;
-            }
-
-            return [
-                'penilaians' => $penilaians,
-                'hasil_smart' => $hasil_smart,
-                'normalized_weights' => $normalized_weights,
-                'total_bobot' => $total_bobot
-            ];
-
-        } catch (Exception $e) {
-            error_log("Get laporan SMART error: " . $e->getMessage());
-            return false;
-        }
-    }
-
     // Get statistics untuk laporan
-    public function getStatistics()
+    // $start_date/$end_date (opsional): filter berdasarkan responden.tanggal_isi
+    public function getStatistics($start_date = null, $end_date = null)
     {
         try {
             $stats = [];
+            $has_filter = $start_date && $end_date;
+            $date_filter = $has_filter ? " AND r.tanggal_isi BETWEEN :start_date AND :end_date" : "";
 
-            // Total responden
-            $query = "SELECT COUNT(*) as total FROM {$this->table_hasil}";
+            // Total responden (distinct - hasil_akhir sekarang berisi banyak baris per responden)
+            $query = "SELECT COUNT(DISTINCT h.id_responden) as total
+                      FROM {$this->table_hasil} h
+                      JOIN responden r ON h.id_responden = r.id_responden
+                      WHERE 1=1{$date_filter}";
             $stmt = $this->conn->prepare($query);
+            if ($has_filter) {
+                $stmt->bindValue(':start_date', $start_date);
+                $stmt->bindValue(':end_date', $end_date);
+            }
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $stats['total_responden'] = $result['total'];
 
-            // Rata-rata SMART
-            $query = "SELECT AVG(nilai_smart) as rerata FROM {$this->table_hasil}";
+            // Rata-rata SMART dari skor layanan favorit tiap responden (konsisten dengan
+            // footer "Rata-rata Nilai" pada laporan, yang menjumlahkan nilai_smart_terbaik)
+            $query = "SELECT AVG(h.nilai_smart) as rerata
+                      FROM {$this->table_hasil} h
+                      JOIN responden r ON h.id_responden = r.id_responden
+                      WHERE h.is_terbaik = 1{$date_filter}";
             $stmt = $this->conn->prepare($query);
+            if ($has_filter) {
+                $stmt->bindValue(':start_date', $start_date);
+                $stmt->bindValue(':end_date', $end_date);
+            }
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $stats['rerata_smart'] = $result['rerata'];

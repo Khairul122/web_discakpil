@@ -5,14 +5,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
         <!-- Column 1: Branding -->
         <div class="space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-gov bg-gradient-to-br from-gov-blue-800 to-gov-blue-700 text-white">
-              <i class="fas fa-building-columns text-sm"></i>
-            </div>
-            <div class="leading-tight">
-              <p class="font-sans font-bold text-sm text-white">DISDUKCAPIL</p>
-              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Kota Padang</p>
-            </div>
+          <div class="flex items-center">
+            <img src="assets/images/logo-pdf.png" alt="Logo DISDUKCAPIL Kota Padang" class="h-9 w-auto object-contain">
           </div>
           <p class="text-xs text-slate-400 leading-relaxed pt-2">
             Unit pelaksana urusan pemerintahan di bidang administrasi kependudukan dan pencatatan sipil Kota Padang. Melayani secara prima, transparan, dan akuntabel.

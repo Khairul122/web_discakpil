@@ -46,9 +46,6 @@ class AdminController
         // Get recent responden
         $recentResponden = $this->dashboardModel->getRecentResponden(5);
 
-        // Get layanan by performance
-        $layananPerformance = $this->dashboardModel->getLayananByPerformance();
-
         $data = [
             'title' => 'Dashboard Admin - DISDUKCAPIL Kota Padang',
             'page_title' => 'Dashboard Administrator',
@@ -58,7 +55,6 @@ class AdminController
             'chart_kriteria' => $chartKriteria,
             'kriteria_dist' => $kriteriaDist,
             'recent_responden' => $recentResponden,
-            'layanan_performance' => $layananPerformance,
             'user' => [
                 'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Admin',
                 'username' => $_SESSION['username'] ?? '',

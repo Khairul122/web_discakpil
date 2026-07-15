@@ -40,17 +40,17 @@
 <div class="card-gov mb-6">
   <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
     <div>
-      <h3 class="font-bold text-slate-800">Performa Layanan (Periode Terbaru)</h3>
-      <p class="text-sm text-slate-500">Ranking layanan berdasarkan metode SMART</p>
+      <h3 class="font-bold text-slate-800">Top 10 Layanan Terbaik</h3>
+      <p class="text-sm text-slate-500">Ranking layanan berdasarkan rata-rata nilai SMART dari seluruh responden penilai</p>
     </div>
-    <a href="index.php?controller=kepalaDinas&action=laporan" class="btn-gov-primary !py-2 !text-xs"><i class="fas fa-file-alt"></i> Laporan Lengkap</a>
+    <a href="index.php?controller=cetak&action=index" class="btn-gov-primary !py-2 !text-xs"><i class="fas fa-file-alt"></i> Laporan Lengkap</a>
   </div>
   <div class="table-gov-scroll">
     <table class="table-gov">
-      <thead><tr><th>Rank</th><th>Kode</th><th>Nama Layanan</th><th>Nilai SMART</th><th>Tanggal</th><th>Status</th></tr></thead>
+      <thead><tr><th>Rank</th><th>Kode</th><th>Nama Layanan</th><th>Rata-rata SMART</th><th>Total Penilai</th><th>Status</th></tr></thead>
       <tbody>
-        <?php if (!empty($data['layanan_performance'])): ?>
-          <?php foreach ($data['layanan_performance'] as $index => $layanan): ?>
+        <?php if (!empty($data['top_layanan'])): ?>
+          <?php foreach ($data['top_layanan'] as $index => $layanan): ?>
             <tr>
               <td>
                 <?php if ($index == 0): ?><span class="badge-gov-gold">🥇 <?= $index + 1 ?></span>
@@ -63,15 +63,15 @@
               <td><?= htmlspecialchars($layanan['nama_layanan']) ?></td>
               <td>
                 <div class="bar-gov-track w-32">
-                  <div class="bar-gov-fill" style="width: <?= $layanan['nilai_smart'] ?>%"></div>
+                  <div class="bar-gov-fill" style="width: <?= $layanan['rata_nilai'] ?>%"></div>
                 </div>
-                <span class="text-xs text-slate-500"><?= number_format($layanan['nilai_smart'], 2) ?>%</span>
+                <span class="text-xs text-slate-500"><?= number_format($layanan['rata_nilai'], 2) ?></span>
               </td>
-              <td class="text-xs text-slate-500"><?= date('d/m/Y H:i', strtotime($layanan['tanggal_perhitungan'])) ?></td>
+              <td><span class="badge-gov-info"><?= $layanan['total_penilaian'] ?>x</span></td>
               <td>
-                <?php if ($layanan['nilai_smart'] >= 80): ?><span class="badge-gov-success">Sangat Baik</span>
-                <?php elseif ($layanan['nilai_smart'] >= 60): ?><span class="badge-gov-info">Baik</span>
-                <?php elseif ($layanan['nilai_smart'] >= 40): ?><span class="badge-gov-warning">Cukup</span>
+                <?php if ($layanan['rata_nilai'] >= 80): ?><span class="badge-gov-success">Sangat Baik</span>
+                <?php elseif ($layanan['rata_nilai'] >= 60): ?><span class="badge-gov-info">Baik</span>
+                <?php elseif ($layanan['rata_nilai'] >= 40): ?><span class="badge-gov-warning">Cukup</span>
                 <?php else: ?><span class="badge-gov-danger">Kurang</span>
                 <?php endif; ?>
               </td>
@@ -88,43 +88,16 @@
   </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
-  <div class="card-gov">
-    <h3 class="font-bold text-slate-800 mb-1">Top 10 Layanan Terbaik</h3>
-    <p class="text-sm text-slate-500 mb-4">Berdasarkan rata-rata nilai SMART</p>
-    <div class="table-gov-scroll">
-      <table class="table-gov">
-        <thead><tr><th>Rank</th><th>Kode</th><th>Layanan</th><th>Nilai</th><th>Total</th></tr></thead>
-        <tbody>
-          <?php if (!empty($data['top_layanan'])): ?>
-            <?php foreach ($data['top_layanan'] as $index => $layanan): ?>
-              <tr>
-                <td><span class="row-number-gov"><?= $index + 1 ?></span></td>
-                <td><?= htmlspecialchars($layanan['kode_alternatif']) ?></td>
-                <td><?= htmlspecialchars($layanan['nama_layanan']) ?></td>
-                <td><span class="badge-gov-primary"><?= number_format($layanan['rata_nilai'], 4) ?></span></td>
-                <td><span class="badge-gov-info"><?= $layanan['total_penilaian'] ?>x</span></td>
-              </tr>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr><td colspan="5" class="text-center text-slate-400 py-6">Belum ada data</td></tr>
-          <?php endif; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card-gov">
-    <h3 class="font-bold text-slate-800 mb-1">Distribusi Jenis Kriteria</h3>
-    <p class="text-sm text-slate-500 mb-4">Berdasarkan tipe kriteria</p>
-    <div style="height: 220px;"><canvas id="kriteriaPieChart"></canvas></div>
-  </div>
+<div class="card-gov mb-6">
+  <h3 class="font-bold text-slate-800 mb-1">Distribusi Jenis Kriteria</h3>
+  <p class="text-sm text-slate-500 mb-4">Berdasarkan tipe kriteria</p>
+  <div style="height: 220px; max-width: 480px;"><canvas id="kriteriaPieChart"></canvas></div>
 </div>
 
 <div class="card-gov">
   <h3 class="font-bold text-slate-800 mb-4">Menu Laporan & Analisis</h3>
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-    <a href="index.php?controller=kepalaDinas&action=laporan" class="btn-gov-primary w-full"><i class="fas fa-file-alt"></i> Laporan Lengkap</a>
+    <a href="index.php?controller=cetak&action=index" class="btn-gov-primary w-full"><i class="fas fa-file-alt"></i> Laporan Lengkap</a>
     <a href="index.php?controller=alternatif&action=index" class="btn-gov-secondary w-full"><i class="fas fa-list"></i> Daftar Layanan</a>
     <a href="index.php?controller=hasil&action=index" class="btn-gov-gold w-full"><i class="fas fa-chart-bar"></i> Hasil SMART</a>
   </div>

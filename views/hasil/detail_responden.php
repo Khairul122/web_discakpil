@@ -23,11 +23,11 @@
         <p><i class="fas fa-birthday-cake mr-2"></i><strong>Usia:</strong> <?= $data['responden']['usia'] ?> tahun</p>
         <p><i class="fas fa-calendar mr-2"></i><strong>Terdaftar:</strong> <?= date('d M Y', strtotime($data['responden']['created_at'])) ?></p>
         <p><i class="fas fa-briefcase mr-2"></i><strong>Pekerjaan:</strong> <?= htmlspecialchars($data['responden']['pekerjaan']) ?></p>
-        <p><i class="fas fa-list-ol mr-2"></i><strong>Total Layanan Dinilai:</strong> <?= count($data['all_penilaians']) ?></p>
+        <p><i class="fas fa-list-ol mr-2"></i><strong>Total Layanan Dinilai:</strong> <?= count($data['all_hasil']) ?></p>
       </div>
     </div>
     <div class="flex h-28 w-28 flex-shrink-0 flex-col items-center justify-center rounded-full bg-white/15 border-4 border-white/25">
-      <span class="text-3xl font-bold"><?= count($data['all_penilaians']) ?></span>
+      <span class="text-3xl font-bold"><?= count($data['all_hasil']) ?></span>
       <span class="text-xs text-white/70">Layanan</span>
     </div>
   </div>
@@ -59,23 +59,15 @@
     <table class="table-gov">
       <thead><tr><th>No</th><th>Layanan</th><th>Nilai SMART</th><th>Aksi</th></tr></thead>
       <tbody>
-        <?php if (!empty($data['all_penilaians'])):
-          $grouped = [];
-          foreach ($data['all_penilaians'] as $p) {
-            if (!isset($grouped[$p['id_alternatif']])) {
-              $grouped[$p['id_alternatif']] = ['nama_layanan' => $p['nama_layanan'], 'nilai_smart' => 0, 'kriteria_count' => 0];
-            }
-            $grouped[$p['id_alternatif']]['nilai_smart'] += $p['nilai_utility'];
-            $grouped[$p['id_alternatif']]['kriteria_count']++;
-          }
-          uasort($grouped, function ($a, $b) { return $b['nilai_smart'] <=> $a['nilai_smart']; });
-        ?>
-          <?php $no = 1; foreach ($grouped as $layanan): ?>
+        <?php if (!empty($data['all_hasil'])): ?>
+          <?php $no = 1; foreach ($data['all_hasil'] as $layanan): ?>
             <tr>
               <td><span class="row-number-gov"><?= $no++ ?></span></td>
               <td>
                 <strong class="text-slate-800"><?= htmlspecialchars($layanan['nama_layanan']) ?></strong>
-                <p class="text-xs text-slate-500 mt-0.5"><i class="fas fa-check-circle mr-1"></i><?= $layanan['kriteria_count'] ?> kriteria dinilai</p>
+                <?php if (!empty($layanan['is_terbaik'])): ?>
+                  <p class="text-xs text-gov-gold-600 mt-0.5"><i class="fas fa-star mr-1"></i>Layanan favorit</p>
+                <?php endif; ?>
               </td>
               <td>
                 <span class="text-xl font-bold <?= $layanan['nilai_smart'] >= 80 ? 'text-gov-green-700' : ($layanan['nilai_smart'] >= 60 ? 'text-gov-blue-700' : ($layanan['nilai_smart'] >= 40 ? 'text-amber-600' : 'text-gov-maroon-700')) ?>"><?= number_format($layanan['nilai_smart'], 2) ?></span>

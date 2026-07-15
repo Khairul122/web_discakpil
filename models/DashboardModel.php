@@ -81,10 +81,11 @@ class DashboardModel
             $stmt->execute();
             $activities['penilaian'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Hasil SMART terbaru
+            // Hasil SMART terbaru (5 responden terakhir yang dihitung, layanan favoritnya)
             $query = "SELECT h.*, a.nama_layanan, a.kode_alternatif
                      FROM hasil_akhir h
-                     JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                     JOIN alternatif a ON h.id_alternatif = a.id_alternatif
+                     WHERE h.is_terbaik = 1
                      ORDER BY h.tanggal_perhitungan DESC
                      LIMIT 5";
 
@@ -99,13 +100,14 @@ class DashboardModel
         }
     }
 
+    // Rata-rata SMART per layanan dari SEMUA responden yang menilainya (agregat SKM)
     public function getTopLayanan($limit = 5)
     {
         try {
             $query = "SELECT a.id_alternatif, a.kode_alternatif, a.nama_layanan,
                              AVG(h.nilai_smart) as rata_nilai, COUNT(h.id_hasil) as total_penilaian
                      FROM hasil_akhir h
-                     JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                     JOIN alternatif a ON h.id_alternatif = a.id_alternatif
                      GROUP BY a.id_alternatif, a.kode_alternatif, a.nama_layanan
                      ORDER BY rata_nilai DESC
                      LIMIT :limit";
@@ -155,28 +157,6 @@ class DashboardModel
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Get recent responden error: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    public function getLayananByPerformance()
-    {
-        try {
-            $query = "SELECT a.id_alternatif, a.kode_alternatif, a.nama_layanan,
-                             h.nilai_smart, h.tanggal_perhitungan
-                     FROM hasil_akhir h
-                     JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
-                     WHERE h.tanggal_perhitungan = (
-                         SELECT MAX(tanggal_perhitungan) FROM hasil_akhir
-                     )
-                     ORDER BY h.nilai_smart DESC";
-
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Get layanan by performance error: " . $e->getMessage());
             return false;
         }
     }

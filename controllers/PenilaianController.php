@@ -1,5 +1,6 @@
 <?php
 require_once 'models/PenilaianModel.php';
+require_once 'models/SmartCalculator.php';
 
 class PenilaianController
 {
@@ -132,110 +133,36 @@ class PenilaianController
         // METODE SMART (Simple Multi-Attribute Rating Technique)
         // ========================================
 
-        // 1. Ambil semua kriteria dengan bobot
+        // 1. Ambil semua kriteria dengan bobot, normalisasi, lalu hitung skor tiap alternatif
         $kriterias = $this->penilaianModel->getAllKriteria();
-        $total_bobot = array_sum(array_column($kriterias, 'bobot'));
+        $normalized_weights = SmartCalculator::normalizeWeights($kriterias);
+        $hasil_smart = SmartCalculator::calculateAllAlternatif($penilaians, $normalized_weights);
 
-        // 2. Normalisasi bobot (pastikan total = 100% atau 1)
-        $normalized_weights = [];
-        $kriteria_jenis = [];
-        foreach ($kriterias as $k) {
-            $normalized_weights[$k['id_kriteria']] = $k['bobot'] / $total_bobot;
-            $kriteria_jenis[$k['id_kriteria']] = $k['jenis'] ?? 'benefit';
+        // 2. Lengkapi nama layanan untuk setiap hasil
+        $alternatif_map = [];
+        foreach ($this->penilaianModel->getAllAlternatif() as $alt) {
+            $alternatif_map[$alt['id_alternatif']] = $alt['nama_layanan'];
         }
-
-        // 3. Group penilaian berdasarkan alternatif (layanan)
-        $penilaian_by_alternatif = [];
-        foreach ($penilaians as $p) {
-            $penilaian_by_alternatif[$p['id_alternatif']][] = $p;
-        }
-
-        // 4. Hitung nilai SMART untuk setiap alternatif
-        $hasil_smart = [];
-        foreach ($penilaian_by_alternatif as $id_alternatif => $penilaian_list) {
-            $nilai_smart = 0;
-            $covered_weight = 0;
-
-            foreach ($penilaian_list as $penilaian) {
-                // Rumus SMART: Σ(Wi × Si)
-                // Wi = Bobot normalisasi kriteria i
-                // Si = Nilai utility sub-kriteria yang dipilih (dibalik jika kriteria bertipe "cost")
-                $bobot_normal = $normalized_weights[$penilaian['id_kriteria']];
-                $nilai_utility = $penilaian['nilai_utility'];
-                $jenis = $kriteria_jenis[$penilaian['id_kriteria']] ?? 'benefit';
-
-                if ($jenis === 'cost') {
-                    $nilai_utility = 100 - $nilai_utility;
-                }
-
-                // Hitung kontribusi kriteria
-                $kontribusi = $bobot_normal * $nilai_utility;
-                $nilai_smart += $kontribusi;
-                $covered_weight += $bobot_normal;
-            }
-
-            // Ambil nama alternatif/layanan
-            $alternatif_data = null;
-            foreach ($this->penilaianModel->getAllAlternatif() as $alt) {
-                if ($alt['id_alternatif'] == $id_alternatif) {
-                    $alternatif_data = $alt;
-                    break;
-                }
-            }
-
-            $hasil_smart[] = [
-                'id_alternatif' => $id_alternatif,
-                'nama_layanan' => $alternatif_data['nama_layanan'],
-                'nilai_smart' => $nilai_smart,
-                'detail_kriteria' => $penilaian_list,
-                'incomplete' => $covered_weight < 0.999,
-                'covered_weight' => $covered_weight
-            ];
-        }
-
-        // 5. Sorting berdasarkan nilai SMART (descending)
-        usort($hasil_smart, function($a, $b) {
-            return $b['nilai_smart'] <=> $a['nilai_smart'];
-        });
-
-        // 6. Tentukan ranking
-        foreach ($hasil_smart as $index => &$hasil) {
-            $hasil['ranking'] = $index + 1;
+        foreach ($hasil_smart as &$hasil) {
+            $hasil['nama_layanan'] = $alternatif_map[$hasil['id_alternatif']] ?? '-';
         }
         unset($hasil);
 
-        // 7. Simpan layanan terbaik (ranking #1) ke tabel hasil_akhir
-        // (tabel hanya menyimpan 1 baris per responden - UNIQUE KEY idx_responden)
+        // 3. Simpan seluruh matriks (responden x alternatif) ke tabel hasil_akhir,
+        //    tandai ranking #1 sebagai layanan favorit responden (is_terbaik)
         if (!empty($hasil_smart)) {
             try {
-                $layanan_terbaik = $hasil_smart[0];
+                $upsert_query = "INSERT INTO hasil_akhir (id_responden, id_alternatif, nilai_smart, is_terbaik, tanggal_perhitungan)
+                                 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+                                 ON DUPLICATE KEY UPDATE
+                                    nilai_smart = VALUES(nilai_smart),
+                                    is_terbaik = VALUES(is_terbaik),
+                                    tanggal_perhitungan = CURRENT_TIMESTAMP";
+                $stmt = $this->penilaianModel->conn->prepare($upsert_query);
 
-                $cek_query = "SELECT id_hasil FROM hasil_akhir WHERE id_responden = ?";
-                $cek_stmt = $this->penilaianModel->conn->prepare($cek_query);
-                $cek_stmt->execute([$id_responden]);
-                $existing = $cek_stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($existing) {
-                    $update_query = "UPDATE hasil_akhir
-                                   SET id_alternatif_terbaik = ?,
-                                       nilai_smart = ?,
-                                       tanggal_perhitungan = CURRENT_TIMESTAMP
-                                   WHERE id_responden = ?";
-                    $stmt = $this->penilaianModel->conn->prepare($update_query);
-                    $stmt->execute([
-                        $layanan_terbaik['id_alternatif'],
-                        $layanan_terbaik['nilai_smart'],
-                        $id_responden
-                    ]);
-                } else {
-                    $insert_query = "INSERT INTO hasil_akhir (id_responden, id_alternatif_terbaik, nilai_smart)
-                                   VALUES (?, ?, ?)";
-                    $stmt = $this->penilaianModel->conn->prepare($insert_query);
-                    $stmt->execute([
-                        $id_responden,
-                        $layanan_terbaik['id_alternatif'],
-                        $layanan_terbaik['nilai_smart']
-                    ]);
+                foreach ($hasil_smart as $row) {
+                    $is_terbaik = ($row['ranking'] === 1) ? 1 : 0;
+                    $stmt->execute([$id_responden, $row['id_alternatif'], $row['nilai_smart'], $is_terbaik]);
                 }
             } catch (Exception $e) {
                 error_log("Error saving hasil SMART: " . $e->getMessage());
@@ -318,19 +245,20 @@ class PenilaianController
                 exit;
             }
 
-            $total_bobot = array_sum(array_column($kriterias, 'bobot'));
-
-            // Normalisasi bobot
-            $normalized_weights = [];
-            $kriteria_jenis = [];
-            foreach ($kriterias as $k) {
-                $normalized_weights[$k['id_kriteria']] = $k['bobot'] / $total_bobot;
-                $kriteria_jenis[$k['id_kriteria']] = $k['jenis'] ?? 'benefit';
-            }
+            // Normalisasi bobot (satu kali untuk semua responden)
+            $normalized_weights = SmartCalculator::normalizeWeights($kriterias);
 
             $total_responden_processed = 0;
             $total_hasil_created = 0;
             $errors = [];
+
+            $upsert_query = "INSERT INTO hasil_akhir (id_responden, id_alternatif, nilai_smart, is_terbaik, tanggal_perhitungan)
+                             VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+                             ON DUPLICATE KEY UPDATE
+                                nilai_smart = VALUES(nilai_smart),
+                                is_terbaik = VALUES(is_terbaik),
+                                tanggal_perhitungan = CURRENT_TIMESTAMP";
+            $upsert_stmt = $this->penilaianModel->conn->prepare($upsert_query);
 
             // Process each respondent
             foreach ($respondens as $responden) {
@@ -344,93 +272,22 @@ class PenilaianController
                         continue; // Skip if no penilaians
                     }
 
-                    // Group penilaian by alternatif
-                    $penilaian_by_alternatif = [];
-                    foreach ($penilaians as $p) {
-                        $penilaian_by_alternatif[$p['id_alternatif']][] = $p;
-                    }
+                    // Calculate SMART for each alternatif rated by this respondent
+                    $hasil_smart = SmartCalculator::calculateAllAlternatif($penilaians, $normalized_weights);
 
-                    // Calculate SMART for each alternatif
-                    $hasil_smart = [];
-                    foreach ($penilaian_by_alternatif as $id_alternatif => $penilaian_list) {
-                        $nilai_smart = 0;
-                        $covered_weight = 0;
-
-                        foreach ($penilaian_list as $penilaian) {
-                            $bobot_normal = $normalized_weights[$penilaian['id_kriteria']];
-                            $nilai_utility = $penilaian['nilai_utility'];
-                            $jenis = $kriteria_jenis[$penilaian['id_kriteria']] ?? 'benefit';
-
-                            if ($jenis === 'cost') {
-                                $nilai_utility = 100 - $nilai_utility;
-                            }
-
-                            $kontribusi = $bobot_normal * $nilai_utility;
-                            $nilai_smart += $kontribusi;
-                            $covered_weight += $bobot_normal;
-                        }
-
-                        $hasil_smart[] = [
-                            'id_alternatif' => $id_alternatif,
-                            'nilai_smart' => $nilai_smart,
-                            'incomplete' => $covered_weight < 0.999
-                        ];
-                    }
-
-                    // Sort by nilai_smart descending
-                    usort($hasil_smart, function($a, $b) {
-                        return $b['nilai_smart'] <=> $a['nilai_smart'];
-                    });
-
-                    // Add ranking
-                    foreach ($hasil_smart as $index => &$hasil) {
-                        $hasil['ranking'] = $index + 1;
-                    }
-                    unset($hasil);
-
-                    // SIMPAN HANYA LAYANAN TERBAIK KE TABEL hasil_akhir
+                    // SIMPAN SELURUH MATRIKS (setiap alternatif) KE TABEL hasil_akhir
                     if (!empty($hasil_smart)) {
                         try {
-                            $layanan_terbaik = $hasil_smart[0]; // Ranking #1
+                            foreach ($hasil_smart as $row) {
+                                if (!empty($row['incomplete'])) {
+                                    $errors[] = "Responden ID {$id_responden}: hasil dihitung dari data yang tidak lengkap (ada kriteria aktif yang belum dinilai untuk layanan ini), skor mungkin kurang akurat.";
+                                }
 
-                            if (!empty($layanan_terbaik['incomplete'])) {
-                                $errors[] = "Responden ID {$id_responden}: hasil dihitung dari data yang tidak lengkap (ada kriteria aktif yang belum dinilai untuk layanan ini), skor mungkin kurang akurat.";
+                                $is_terbaik = ($row['ranking'] === 1) ? 1 : 0;
+                                $upsert_stmt->execute([$id_responden, $row['id_alternatif'], $row['nilai_smart'], $is_terbaik]);
+                                $total_hasil_created++;
                             }
 
-                            // Cek apakah sudah ada hasil untuk responden ini
-                            $cek_query = "SELECT id_hasil FROM hasil_akhir WHERE id_responden = ?";
-                            $cek_stmt = $this->penilaianModel->conn->prepare($cek_query);
-                            $cek_stmt->execute([$id_responden]);
-                            $existing = $cek_stmt->fetch(PDO::FETCH_ASSOC);
-
-                            if ($existing) {
-                                // Update existing
-                                $update_query = "UPDATE hasil_akhir
-                                               SET id_alternatif_terbaik = ?,
-                                                   nilai_smart = ?,
-                                                   tanggal_perhitungan = CURRENT_TIMESTAMP
-                                               WHERE id_responden = ?";
-                                $update_stmt = $this->penilaianModel->conn->prepare($update_query);
-                                $update_stmt->execute([
-                                    $layanan_terbaik['id_alternatif'],
-                                    $layanan_terbaik['nilai_smart'],
-                                    $id_responden
-                                ]);
-                                error_log("Updated hasil_akhir for respondent ID {$id_responden}");
-                            } else {
-                                // Insert new
-                                $insert_query = "INSERT INTO hasil_akhir (id_responden, id_alternatif_terbaik, nilai_smart)
-                                               VALUES (?, ?, ?)";
-                                $insert_stmt = $this->penilaianModel->conn->prepare($insert_query);
-                                $insert_stmt->execute([
-                                    $id_responden,
-                                    $layanan_terbaik['id_alternatif'],
-                                    $layanan_terbaik['nilai_smart']
-                                ]);
-                                error_log("Inserted hasil_akhir for respondent ID {$id_responden}");
-                            }
-
-                            $total_hasil_created++;
                             $total_responden_processed++;
 
                         } catch (Exception $e) {

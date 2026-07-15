@@ -38,7 +38,7 @@ class HasilController
         if ($view_mode === 'alternatif') {
             $hasil_data = $this->hasilModel->getAllGroupedByAlternatif();
         } else {
-            $hasil_data = $this->hasilModel->getAll();
+            $hasil_data = $this->hasilModel->getAllTerbaik();
         }
 
         // Ensure hasil_data is an array
@@ -100,17 +100,16 @@ class HasilController
             exit;
         }
 
-        // Get full detail SMART from penilaian for all layanan
-        require_once 'models/PenilaianModel.php';
-        $penilaianModel = new PenilaianModel($this->hasilModel->conn);
-        $all_penilaians = $penilaianModel->getByResponden($id_responden);
+        // Get seluruh skor SMART (semua layanan yang dinilai) untuk responden ini,
+        // sudah correctly-weighted langsung dari hasil_akhir - tidak perlu hitung manual di view.
+        $all_hasil = $this->hasilModel->getAllByResponden($id_responden);
 
         $data = [
             'title' => 'Detail Hasil - DISDUKCAPIL Kota Padang',
             'page_title' => 'Detail Hasil Perhitungan',
             'responden' => $responden,
             'hasil' => $hasil,
-            'all_penilaians' => $all_penilaians,
+            'all_hasil' => $all_hasil,
             'user' => [
                 'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Admin',
                 'username' => $_SESSION['username'] ?? '',
@@ -217,73 +216,6 @@ class HasilController
         }
 
         header('Location: index.php?controller=hasil&action=index');
-        exit;
-    }
-
-    // Export to CSV
-    public function exportCSV()
-    {
-        $view_mode = isset($_GET['view']) ? $_GET['view'] : 'responden';
-
-        // Get data
-        if ($view_mode === 'alternatif') {
-            $data = $this->hasilModel->getAllGroupedByAlternatif();
-        } elseif ($view_mode === 'ranking') {
-            $data = $this->hasilModel->getAlternatifRanking();
-        } else {
-            $data = $this->hasilModel->getAllGroupedByResponden();
-        }
-
-        // Set headers for CSV download
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="hasil_smart_' . date('Y-m-d') . '.csv"');
-        header('Pragma: no-cache');
-        header('Expires: 0');
-
-        // Create output stream
-        $output = fopen('php://output', 'w');
-
-        // Output CSV based on view mode
-        if ($view_mode === 'alternatif') {
-            fputcsv($output, ['Layanan', 'Nama Responden', 'Nilai SMART', 'Ranking', 'Tanggal Perhitungan']);
-            foreach ($data as $item) {
-                foreach ($item['hasil_responden'] as $hasil) {
-                    fputcsv($output, [
-                        $item['nama_layanan'],
-                        $hasil['nama_responden'],
-                        number_format($hasil['nilai_smart'], 2),
-                        $hasil['ranking'],
-                        $hasil['tanggal_perhitungan']
-                    ]);
-                }
-            }
-        } elseif ($view_mode === 'ranking') {
-            fputcsv($output, ['Nama Layanan', 'Rata-rata SMART', 'Total Penilai', 'Nilai Min', 'Nilai Max']);
-            foreach ($data as $item) {
-                fputcsv($output, [
-                    $item['nama_layanan'],
-                    number_format($item['rerata_smart'], 2),
-                    $item['total_penilai'],
-                    number_format($item['nilai_min'], 2),
-                    number_format($item['nilai_max'], 2)
-                ]);
-            }
-        } else {
-            fputcsv($output, ['Responden', 'Layanan', 'Nilai SMART', 'Ranking', 'Tanggal Perhitungan']);
-            foreach ($data as $item) {
-                foreach ($item['hasil_layanan'] as $hasil) {
-                    fputcsv($output, [
-                        $item['nama_responden'],
-                        $hasil['nama_layanan'],
-                        number_format($hasil['nilai_smart'], 2),
-                        $hasil['ranking'],
-                        $hasil['tanggal_perhitungan']
-                    ]);
-                }
-            }
-        }
-
-        fclose($output);
         exit;
     }
 }

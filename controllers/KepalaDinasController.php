@@ -45,9 +45,6 @@ class KepalaDinasController
         // Get kriteria distribution
         $kriteriaDist = $this->dashboardModel->getKriteriaDistribution();
 
-        // Get layanan by performance
-        $layananPerformance = $this->dashboardModel->getLayananByPerformance();
-
         // Get survey trend
         $surveyTrend = $this->dashboardModel->getSurveyTrend();
 
@@ -59,7 +56,6 @@ class KepalaDinasController
             'top_layanan' => $topLayanan,
             'chart_kriteria' => $chartKriteria,
             'kriteria_dist' => $kriteriaDist,
-            'layanan_performance' => $layananPerformance,
             'survey_trend' => $surveyTrend,
             'user' => [
                 'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Kepala Dinas',
@@ -69,31 +65,6 @@ class KepalaDinasController
         ];
 
         require_once 'views/dashboard/kadis.php';
-    }
-
-    public function laporan()
-    {
-        // Get detailed reports
-        $stats = $this->dashboardModel->getStatistics();
-        $layananPerformance = $this->dashboardModel->getLayananByPerformance();
-        $topLayanan = $this->dashboardModel->getTopLayanan(10);
-        $surveyTrend = $this->dashboardModel->getSurveyTrend();
-
-        $data = [
-            'title' => 'Laporan - DISDUKCAPIL Kota Padang',
-            'page_title' => 'Laporan Analisis',
-            'stats' => $stats,
-            'layanan_performance' => $layananPerformance,
-            'top_layanan' => $topLayanan,
-            'survey_trend' => $surveyTrend,
-            'user' => [
-                'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Kepala Dinas',
-                'username' => $_SESSION['username'] ?? '',
-                'role' => $_SESSION['role'] ?? 'kepala_dinas'
-            ]
-        ];
-
-        require_once 'views/dashboard/laporan.php';
     }
 
     public function logout()

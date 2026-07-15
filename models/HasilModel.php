@@ -16,7 +16,7 @@ class HasilModel
         $this->alternatifModel = new AlternatifModel($connection);
     }
 
-    // Get all hasil with responden and alternatif details
+    // Get seluruh matriks hasil (semua pasangan responden x alternatif)
     public function getAll()
     {
         try {
@@ -27,7 +27,7 @@ class HasilModel
                              a.nama_layanan
                       FROM " . $this->table . " h
                       JOIN responden r ON h.id_responden = r.id_responden
-                      JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                      JOIN alternatif a ON h.id_alternatif = a.id_alternatif
                       ORDER BY h.nilai_smart DESC";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -38,25 +38,47 @@ class HasilModel
         }
     }
 
-    // Get hasil grouped by respondent
-    public function getAllGroupedByResponden()
+    // Get hanya baris layanan favorit (is_terbaik) tiap responden - untuk tampilan "Per Responden"
+    public function getAllTerbaik()
     {
-        // Not needed anymore since 1 record per responden
-        return $this->getAll();
+        try {
+            $query = "SELECT h.*,
+                             r.nama_lengkap,
+                             r.usia,
+                             r.pekerjaan,
+                             a.nama_layanan
+                      FROM " . $this->table . " h
+                      JOIN responden r ON h.id_responden = r.id_responden
+                      JOIN alternatif a ON h.id_alternatif = a.id_alternatif
+                      WHERE h.is_terbaik = 1
+                      ORDER BY h.nilai_smart DESC";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Get all hasil terbaik error: " . $e->getMessage());
+            return false;
+        }
     }
 
-    // Get hasil grouped by alternatif (layanan terbaik)
+    // Get hasil grouped by respondent (alias historis, sekarang = getAllTerbaik)
+    public function getAllGroupedByResponden()
+    {
+        return $this->getAllTerbaik();
+    }
+
+    // Get rata-rata kepuasan per layanan (agregat dari SEMUA responden yang menilai, bukan hanya pemenang)
     public function getAllGroupedByAlternatif()
     {
         try {
-            $query = "SELECT h.id_alternatif_terbaik as id_alternatif,
+            $query = "SELECT h.id_alternatif,
                              a.nama_layanan,
                              COUNT(*) as total_memilih,
                              AVG(h.nilai_smart) as rerata_smart
                       FROM " . $this->table . " h
-                      JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
-                      GROUP BY h.id_alternatif_terbaik, a.nama_layanan
-                      ORDER BY total_memilih DESC, rerata_smart DESC";
+                      JOIN alternatif a ON h.id_alternatif = a.id_alternatif
+                      GROUP BY h.id_alternatif, a.nama_layanan
+                      ORDER BY rerata_smart DESC, total_memilih DESC";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -66,15 +88,16 @@ class HasilModel
         }
     }
 
-    // Get hasil by responden
+    // Get hasil (layanan favorit) untuk 1 responden
     public function getByResponden($id_responden)
     {
         try {
             $query = "SELECT h.*,
                              a.nama_layanan
                       FROM " . $this->table . " h
-                      JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                      JOIN alternatif a ON h.id_alternatif = a.id_alternatif
                       WHERE h.id_responden = :id_responden
+                        AND h.is_terbaik = 1
                       LIMIT 1";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':id_responden', $id_responden);
@@ -86,7 +109,27 @@ class HasilModel
         }
     }
 
-    // Get hasil by alternatif (responden yang memilih layanan ini sebagai terbaik)
+    // Get seluruh baris (semua alternatif yang dinilai) milik 1 responden
+    public function getAllByResponden($id_responden)
+    {
+        try {
+            $query = "SELECT h.*,
+                             a.nama_layanan
+                      FROM " . $this->table . " h
+                      JOIN alternatif a ON h.id_alternatif = a.id_alternatif
+                      WHERE h.id_responden = :id_responden
+                      ORDER BY h.nilai_smart DESC";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id_responden', $id_responden);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Get all hasil by responden error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Get hasil by alternatif (semua responden yang menilai layanan ini)
     public function getByAlternatif($id_alternatif)
     {
         try {
@@ -96,7 +139,7 @@ class HasilModel
                              r.pekerjaan
                       FROM " . $this->table . " h
                       JOIN responden r ON h.id_responden = r.id_responden
-                      WHERE h.id_alternatif_terbaik = :id_alternatif
+                      WHERE h.id_alternatif = :id_alternatif
                       ORDER BY h.nilai_smart DESC";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':id_alternatif', $id_alternatif);
@@ -119,7 +162,7 @@ class HasilModel
                              a.nama_layanan
                       FROM " . $this->table . " h
                       JOIN responden r ON h.id_responden = r.id_responden
-                      JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
+                      JOIN alternatif a ON h.id_alternatif = a.id_alternatif
                       WHERE h.id_hasil = :id_hasil
                       LIMIT 1";
             $stmt = $this->conn->prepare($query);
@@ -132,42 +175,19 @@ class HasilModel
         }
     }
 
-    // Get top alternatif (layanan yang paling banyak dipilih sebagai terbaik)
+    // Get layanan dengan rata-rata SMART tertinggi (ranking SKM #1)
     public function getTopAlternatif()
     {
         try {
-            $query = "SELECT h.id_alternatif_terbaik as id_alternatif,
-                             a.nama_layanan,
-                             COUNT(*) as total_penilai
-                      FROM " . $this->table . " h
-                      JOIN alternatif a ON h.id_alternatif_terbaik = a.id_alternatif
-                      GROUP BY h.id_alternatif_terbaik, a.nama_layanan
-                      ORDER BY total_penilai DESC
-                      LIMIT 1";
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result) {
-                // Get average SMART for this alternatif
-                $query2 = "SELECT AVG(nilai_smart) as rerata_smart
-                          FROM " . $this->table . "
-                          WHERE id_alternatif_terbaik = :id_alternatif";
-                $stmt2 = $this->conn->prepare($query2);
-                $stmt2->bindParam(':id_alternatif', $result['id_alternatif']);
-                $stmt2->execute();
-                $avg = $stmt2->fetch(PDO::FETCH_ASSOC);
-                $result['rerata_smart'] = $avg['rerata_smart'];
-            }
-
-            return $result;
-        } catch (PDOException $e) {
+            $ranked = $this->getAllGroupedByAlternatif();
+            return $ranked[0] ?? false;
+        } catch (Exception $e) {
             error_log("Get top alternatif error: " . $e->getMessage());
             return false;
         }
     }
 
-    // Get ranking summary for all alternatif
+    // Get ranking summary for all alternatif (alias)
     public function getAlternatifRanking()
     {
         return $this->getAllGroupedByAlternatif();
@@ -179,22 +199,28 @@ class HasilModel
         try {
             $stats = [];
 
-            // Total hasil (sama dengan total responden karena 1 record per responden)
+            // Total baris hasil (matriks penuh: responden x alternatif)
             $query = "SELECT COUNT(*) as total FROM " . $this->table;
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $stats['total_hasil'] = $result['total'];
+
+            // Total responden yang punya hasil (distinct, tidak sama dengan total_hasil lagi)
+            $query = "SELECT COUNT(DISTINCT id_responden) as total FROM " . $this->table;
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $stats['total_responden'] = $result['total'];
 
-            // Total alternatif yang dipilih sebagai terbaik
-            $query = "SELECT COUNT(DISTINCT id_alternatif_terbaik) as total FROM " . $this->table;
+            // Total alternatif yang pernah dinilai
+            $query = "SELECT COUNT(DISTINCT id_alternatif) as total FROM " . $this->table;
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $stats['total_alternatif'] = $result['total'];
 
-            // Rata-rata SMART keseluruhan
+            // Rata-rata SMART keseluruhan (dari seluruh baris matriks)
             $query = "SELECT AVG(nilai_smart) as rerata FROM " . $this->table;
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -222,7 +248,7 @@ class HasilModel
         }
     }
 
-    // Delete hasil by responden
+    // Delete hasil by responden (seluruh baris/alternatif milik responden ini)
     public function deleteByResponden($id_responden)
     {
         try {

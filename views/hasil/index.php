@@ -50,8 +50,8 @@
     <button class="btn-gov <?= $data['view_mode'] === 'alternatif' ? 'btn-gov-primary' : 'btn-gov-secondary' ?>" onclick="switchView('alternatif')">
       <i class="fas fa-concierge-bell"></i> Per Layanan
     </button>
-    <a href="index.php?controller=hasil&action=exportCSV&view=<?= $data['view_mode'] ?>" class="btn-gov-success ml-auto">
-      <i class="fas fa-file-csv"></i> Export CSV
+    <a href="index.php?controller=cetak&action=index" class="btn-gov-success ml-auto">
+      <i class="fas fa-print"></i> Cetak Laporan
     </a>
   </div>
 </div>
@@ -61,7 +61,7 @@
     <?php if (!empty($data['hasil_data'])): ?>
       <div class="table-gov-scroll">
         <table class="table-gov">
-          <thead><tr><th>No</th><th>Layanan</th><th>Total Memilih</th><th>Rata-rata SMART</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>No</th><th>Layanan</th><th>Total Penilai</th><th>Rata-rata SMART</th><th>Aksi</th></tr></thead>
           <tbody>
             <?php $no = 1; foreach ($data['hasil_data'] as $alternatif): ?>
               <tr>

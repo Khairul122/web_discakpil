@@ -69,13 +69,7 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
        class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full lg:translate-x-0 transition-transform duration-300
               bg-white border-r border-slate-100 text-slate-700 flex flex-col shadow-soft-raised-lg">
   <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
-    <div class="flex h-11 w-11 items-center justify-center rounded-gov bg-gradient-to-br from-gov-blue-800 to-gov-blue-700 shadow-soft-raised-sm text-white">
-      <i class="fas fa-building-columns text-base"></i>
-    </div>
-    <div>
-      <p class="font-sans font-bold text-sm leading-tight text-slate-800">DISDUKCAPIL</p>
-      <p class="text-[11px] text-slate-500 font-semibold tracking-wide">Kota Padang</p>
-    </div>
+    <img src="assets/images/logo-pdf.png" alt="Logo DISDUKCAPIL Kota Padang" class="h-9 w-auto object-contain max-w-[170px]">
     <button id="sidebarClose" type="button" class="ml-auto lg:hidden text-slate-400 hover:text-slate-650 min-h-[44px] min-w-[44px] flex items-center justify-center">
       <i class="fas fa-xmark"></i>
     </button>
@@ -141,6 +135,13 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
         <i class="fas fa-chart-line w-5 text-center"></i>
         <span>Hasil Akhir</span>
       </a>
+
+      <a href="index.php?controller=cetak&action=index"
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= isActive('cetak') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+        <i class="fas fa-print w-5 text-center"></i>
+        <span>Cetak Laporan</span>
+      </a>
     <?php endif; ?>
 
     <?php if (hasRole('kepala_dinas')): ?>
@@ -151,11 +152,11 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
         <span>Penilaian</span>
       </a>
 
-      <a href="index.php?controller=laporan&action=index"
+      <a href="index.php?controller=cetak&action=index"
          class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
-                <?= isActive('laporan') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
-        <i class="fas fa-file-pdf w-5 text-center"></i>
-        <span>Laporan</span>
+                <?= isActive('cetak') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+        <i class="fas fa-print w-5 text-center"></i>
+        <span>Cetak Laporan</span>
       </a>
     <?php endif; ?>
   </nav>

@@ -60,6 +60,7 @@
             <option value="cost" <?= $data['form_type'] == 'edit' && $data['kriteria']['jenis'] == 'cost' ? 'selected' : '' ?>>Cost (Biaya)</option>
           </select>
           <p class="help-gov"><i class="fas fa-info-circle"></i> Benefit: semakin tinggi semakin baik</p>
+          <p class="help-gov"><i class="fas fa-circle-info"></i> Catatan: Nilai utility pada sub-kriteria selalu diisi sebagai skor kepuasan langsung (100 = Sangat Baik, 0 = Sangat Kurang) untuk semua jenis kriteria. Field "Jenis" di sini hanya bersifat informatif dan tidak memengaruhi perhitungan SMART.</p>
         </div>
       </div>
 
