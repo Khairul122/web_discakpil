@@ -12,8 +12,8 @@ class LandingController
     {
         // Data statis untuk landing page
         $data = [
-            'title' => 'Dinas Kependudukan dan Pencatatan Sipil Kota Padang',
-            'page_title' => 'DISDUKCAPIL Kota Padang',
+            'title' => 'Sistem Informasi Penilaian Kepuasan Masyarakat Terhadap Layanan Kantor Dinas Kependudukan dan Pencatatan Sipil Kota Padang Menggunakan Metode SMART',
+            'page_title' => 'Sistem Informasi Penilaian Kepuasan Masyarakat Terhadap Layanan Kantor Dinas Kependudukan dan Pencatatan Sipil Kota Padang Menggunakan Metode SMART',
             'subtitle' => 'Melayani dengan Sepenuh Hati',
             'tentang' => [
                 'judul' => 'Tentang Kami',

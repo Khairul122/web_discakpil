@@ -140,26 +140,26 @@
 
     if (!namaResponden.value.trim()) {
       e.preventDefault(); namaResponden.classList.add('input-gov-invalid'); namaResponden.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama lengkap wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama lengkap wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!usia.value || usia.value < 1 || usia.value > 120) {
       e.preventDefault(); usia.classList.add('input-gov-invalid'); usia.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Usia harus antara 1-120 tahun!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Usia harus antara 1-120 tahun!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!pekerjaan.value.trim()) {
       e.preventDefault(); pekerjaan.classList.add('input-gov-invalid'); pekerjaan.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Pekerjaan wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Pekerjaan wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!idAlternatif.value) {
       e.preventDefault(); idAlternatif.classList.add('input-gov-invalid'); idAlternatif.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Layanan wajib dipilih!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Layanan wajib dipilih!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 
     document.querySelectorAll('select[name^="id_sub_"]').forEach((select) => {
       if (!select.value) {
         e.preventDefault(); select.classList.add('input-gov-invalid');
-        Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Semua kriteria wajib dinilai!', confirmButtonColor: '#1D4E8F' });
+        Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Semua kriteria wajib dinilai!', confirmButtonColor: '#2456A6' });
         isValid = false;
       }
     });

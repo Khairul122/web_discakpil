@@ -138,8 +138,10 @@ class PenilaianController
 
         // 2. Normalisasi bobot (pastikan total = 100% atau 1)
         $normalized_weights = [];
+        $kriteria_jenis = [];
         foreach ($kriterias as $k) {
             $normalized_weights[$k['id_kriteria']] = $k['bobot'] / $total_bobot;
+            $kriteria_jenis[$k['id_kriteria']] = $k['jenis'] ?? 'benefit';
         }
 
         // 3. Group penilaian berdasarkan alternatif (layanan)
@@ -152,17 +154,24 @@ class PenilaianController
         $hasil_smart = [];
         foreach ($penilaian_by_alternatif as $id_alternatif => $penilaian_list) {
             $nilai_smart = 0;
+            $covered_weight = 0;
 
             foreach ($penilaian_list as $penilaian) {
                 // Rumus SMART: Σ(Wi × Si)
                 // Wi = Bobot normalisasi kriteria i
-                // Si = Nilai utility sub-kriteria yang dipilih
+                // Si = Nilai utility sub-kriteria yang dipilih (dibalik jika kriteria bertipe "cost")
                 $bobot_normal = $normalized_weights[$penilaian['id_kriteria']];
                 $nilai_utility = $penilaian['nilai_utility'];
+                $jenis = $kriteria_jenis[$penilaian['id_kriteria']] ?? 'benefit';
+
+                if ($jenis === 'cost') {
+                    $nilai_utility = 100 - $nilai_utility;
+                }
 
                 // Hitung kontribusi kriteria
                 $kontribusi = $bobot_normal * $nilai_utility;
                 $nilai_smart += $kontribusi;
+                $covered_weight += $bobot_normal;
             }
 
             // Ambil nama alternatif/layanan
@@ -178,7 +187,9 @@ class PenilaianController
                 'id_alternatif' => $id_alternatif,
                 'nama_layanan' => $alternatif_data['nama_layanan'],
                 'nilai_smart' => $nilai_smart,
-                'detail_kriteria' => $penilaian_list
+                'detail_kriteria' => $penilaian_list,
+                'incomplete' => $covered_weight < 0.999,
+                'covered_weight' => $covered_weight
             ];
         }
 
@@ -191,28 +202,44 @@ class PenilaianController
         foreach ($hasil_smart as $index => &$hasil) {
             $hasil['ranking'] = $index + 1;
         }
+        unset($hasil);
 
-        // 7. Simpan ke tabel hasil_akhir
-        try {
-            // Hapus hasil lama untuk responden ini
-            $delete_query = "DELETE FROM hasil_akhir WHERE id_responden = ?";
-            $stmt = $this->penilaianModel->conn->prepare($delete_query);
-            $stmt->execute([$id_responden]);
+        // 7. Simpan layanan terbaik (ranking #1) ke tabel hasil_akhir
+        // (tabel hanya menyimpan 1 baris per responden - UNIQUE KEY idx_responden)
+        if (!empty($hasil_smart)) {
+            try {
+                $layanan_terbaik = $hasil_smart[0];
 
-            // Insert hasil baru
-            $insert_query = "INSERT INTO hasil_akhir (id_alternatif, id_responden, nilai_smart, ranking) VALUES (?, ?, ?, ?)";
-            $stmt = $this->penilaianModel->conn->prepare($insert_query);
+                $cek_query = "SELECT id_hasil FROM hasil_akhir WHERE id_responden = ?";
+                $cek_stmt = $this->penilaianModel->conn->prepare($cek_query);
+                $cek_stmt->execute([$id_responden]);
+                $existing = $cek_stmt->fetch(PDO::FETCH_ASSOC);
 
-            foreach ($hasil_smart as $hasil) {
-                $stmt->execute([
-                    $hasil['id_alternatif'],
-                    $id_responden,
-                    $hasil['nilai_smart'],
-                    $hasil['ranking']
-                ]);
+                if ($existing) {
+                    $update_query = "UPDATE hasil_akhir
+                                   SET id_alternatif_terbaik = ?,
+                                       nilai_smart = ?,
+                                       tanggal_perhitungan = CURRENT_TIMESTAMP
+                                   WHERE id_responden = ?";
+                    $stmt = $this->penilaianModel->conn->prepare($update_query);
+                    $stmt->execute([
+                        $layanan_terbaik['id_alternatif'],
+                        $layanan_terbaik['nilai_smart'],
+                        $id_responden
+                    ]);
+                } else {
+                    $insert_query = "INSERT INTO hasil_akhir (id_responden, id_alternatif_terbaik, nilai_smart)
+                                   VALUES (?, ?, ?)";
+                    $stmt = $this->penilaianModel->conn->prepare($insert_query);
+                    $stmt->execute([
+                        $id_responden,
+                        $layanan_terbaik['id_alternatif'],
+                        $layanan_terbaik['nilai_smart']
+                    ]);
+                }
+            } catch (Exception $e) {
+                error_log("Error saving hasil SMART: " . $e->getMessage());
             }
-        } catch (Exception $e) {
-            error_log("Error saving hasil SMART: " . $e->getMessage());
         }
 
         $data = [
@@ -295,8 +322,10 @@ class PenilaianController
 
             // Normalisasi bobot
             $normalized_weights = [];
+            $kriteria_jenis = [];
             foreach ($kriterias as $k) {
                 $normalized_weights[$k['id_kriteria']] = $k['bobot'] / $total_bobot;
+                $kriteria_jenis[$k['id_kriteria']] = $k['jenis'] ?? 'benefit';
             }
 
             $total_responden_processed = 0;
@@ -325,17 +354,26 @@ class PenilaianController
                     $hasil_smart = [];
                     foreach ($penilaian_by_alternatif as $id_alternatif => $penilaian_list) {
                         $nilai_smart = 0;
+                        $covered_weight = 0;
 
                         foreach ($penilaian_list as $penilaian) {
                             $bobot_normal = $normalized_weights[$penilaian['id_kriteria']];
                             $nilai_utility = $penilaian['nilai_utility'];
+                            $jenis = $kriteria_jenis[$penilaian['id_kriteria']] ?? 'benefit';
+
+                            if ($jenis === 'cost') {
+                                $nilai_utility = 100 - $nilai_utility;
+                            }
+
                             $kontribusi = $bobot_normal * $nilai_utility;
                             $nilai_smart += $kontribusi;
+                            $covered_weight += $bobot_normal;
                         }
 
                         $hasil_smart[] = [
                             'id_alternatif' => $id_alternatif,
-                            'nilai_smart' => $nilai_smart
+                            'nilai_smart' => $nilai_smart,
+                            'incomplete' => $covered_weight < 0.999
                         ];
                     }
 
@@ -348,11 +386,16 @@ class PenilaianController
                     foreach ($hasil_smart as $index => &$hasil) {
                         $hasil['ranking'] = $index + 1;
                     }
+                    unset($hasil);
 
                     // SIMPAN HANYA LAYANAN TERBAIK KE TABEL hasil_akhir
                     if (!empty($hasil_smart)) {
                         try {
                             $layanan_terbaik = $hasil_smart[0]; // Ranking #1
+
+                            if (!empty($layanan_terbaik['incomplete'])) {
+                                $errors[] = "Responden ID {$id_responden}: hasil dihitung dari data yang tidak lengkap (ada kriteria aktif yang belum dinilai untuk layanan ini), skor mungkin kurang akurat.";
+                            }
 
                             // Cek apakah sudah ada hasil untuk responden ini
                             $cek_query = "SELECT id_hasil FROM hasil_akhir WHERE id_responden = ?";
@@ -515,7 +558,7 @@ class PenilaianController
             if ($respondenModel->create($nama_responden, $usia, $pekerjaan)) {
                 // Get the newly created respondent ID
                 $newRespondens = $respondenModel->search($nama_responden);
-                foreach ($newRespondents as $new) {
+                foreach ($newRespondens as $new) {
                     if ($new['nama_lengkap'] === $nama_responden &&
                         $new['usia'] == $usia &&
                         $new['pekerjaan'] === $pekerjaan) {

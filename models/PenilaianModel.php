@@ -25,7 +25,7 @@ class PenilaianModel
     public function getAll()
     {
         try {
-            $query = "SELECT p.*, r.nama_responden, a.nama_layanan, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
+            $query = "SELECT p.*, r.nama_lengkap AS nama_responden, a.nama_layanan, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
                      FROM " . $this->table . " p
                      JOIN responden r ON p.id_responden = r.id_responden
                      JOIN alternatif a ON p.id_alternatif = a.id_alternatif
@@ -44,7 +44,7 @@ class PenilaianModel
     public function getById($id_penilaian)
     {
         try {
-            $query = "SELECT p.*, r.nama_responden, a.nama_layanan, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
+            $query = "SELECT p.*, r.nama_lengkap AS nama_responden, a.nama_layanan, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
                      FROM " . $this->table . " p
                      JOIN responden r ON p.id_responden = r.id_responden
                      JOIN alternatif a ON p.id_alternatif = a.id_alternatif
@@ -85,7 +85,7 @@ class PenilaianModel
     public function getByAlternatif($id_alternatif)
     {
         try {
-            $query = "SELECT p.*, r.nama_responden, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
+            $query = "SELECT p.*, r.nama_lengkap AS nama_responden, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
                      FROM " . $this->table . " p
                      JOIN responden r ON p.id_responden = r.id_responden
                      JOIN kriteria k ON p.id_kriteria = k.id_kriteria
@@ -191,13 +191,13 @@ class PenilaianModel
     public function search($keyword)
     {
         try {
-            $query = "SELECT p.*, r.nama_responden, a.nama_layanan, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
+            $query = "SELECT p.*, r.nama_lengkap AS nama_responden, a.nama_layanan, k.nama_kriteria, k.kode_kriteria, sk.nama_pilihan, sk.nilai_utility
                      FROM " . $this->table . " p
                      JOIN responden r ON p.id_responden = r.id_responden
                      JOIN alternatif a ON p.id_alternatif = a.id_alternatif
                      JOIN kriteria k ON p.id_kriteria = k.id_kriteria
                      JOIN sub_kriteria sk ON p.id_sub = sk.id_sub
-                     WHERE r.nama_responden LIKE :keyword
+                     WHERE r.nama_lengkap LIKE :keyword
                         OR a.nama_layanan LIKE :keyword
                         OR k.nama_kriteria LIKE :keyword
                         OR sk.nama_pilihan LIKE :keyword

@@ -109,15 +109,15 @@
 
     if (!idKriteria.value) {
       e.preventDefault(); idKriteria.classList.add('input-gov-invalid'); idKriteria.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kriteria wajib dipilih!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kriteria wajib dipilih!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!namaPilihan.value.trim()) {
       e.preventDefault(); namaPilihan.classList.add('input-gov-invalid'); namaPilihan.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama pilihan wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama pilihan wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!nilaiUtility.value || nilaiUtility.value < 0 || nilaiUtility.value > 100) {
       e.preventDefault(); nilaiUtility.classList.add('input-gov-invalid'); nilaiUtility.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nilai utility harus antara 0-100!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nilai utility harus antara 0-100!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 

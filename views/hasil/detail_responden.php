@@ -18,7 +18,7 @@
 <div class="card-gov !bg-gradient-to-br !from-gov-blue-800 !to-gov-blue-950 !text-white mb-6">
   <div class="flex items-center justify-between flex-wrap gap-6">
     <div>
-      <h2 class="font-serif text-xl font-bold mb-3"><i class="fas fa-user-circle mr-2"></i><?= htmlspecialchars($data['responden']['nama_lengkap']) ?></h2>
+      <h2 class="font-sans text-xl font-bold mb-3"><i class="fas fa-user-circle mr-2"></i><?= htmlspecialchars($data['responden']['nama_lengkap']) ?></h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-white/85">
         <p><i class="fas fa-birthday-cake mr-2"></i><strong>Usia:</strong> <?= $data['responden']['usia'] ?> tahun</p>
         <p><i class="fas fa-calendar mr-2"></i><strong>Terdaftar:</strong> <?= date('d M Y', strtotime($data['responden']['created_at'])) ?></p>
@@ -39,7 +39,7 @@
       <div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/25 text-3xl flex-shrink-0"><i class="fas fa-trophy"></i></div>
       <div class="flex-1">
         <p class="font-bold text-sm uppercase tracking-wide mb-1"><i class="fas fa-star"></i> Layanan Terbaik</p>
-        <h4 class="font-serif text-xl font-bold"><?= htmlspecialchars($best_service['nama_layanan']) ?></h4>
+        <h4 class="font-sans text-xl font-bold"><?= htmlspecialchars($best_service['nama_layanan']) ?></h4>
         <p class="text-sm opacity-80">Nilai SMART: <strong><?= number_format($best_service['nilai_smart'], 2) ?></strong></p>
         <p class="text-xs opacity-70">Tanggal: <?= date('d/m/Y H:i', strtotime($best_service['tanggal_perhitungan'])) ?></p>
       </div>

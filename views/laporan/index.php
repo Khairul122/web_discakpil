@@ -121,7 +121,7 @@
       title: 'Generate PDF Laporan?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#1D4E8F',
+      confirmButtonColor: '#2456A6',
       cancelButtonColor: '#64748b',
       confirmButtonText: '<i class="fas fa-file-pdf mr-2"></i>Ya, Generate!',
       cancelButtonText: 'Batal'
@@ -129,7 +129,7 @@
       if (result.isConfirmed) {
         Swal.fire({
           title: 'Generating PDF...',
-          html: '<i class="fas fa-spinner fa-spin fa-3x" style="color:#1D4E8F"></i><br><br>Mohon tunggu sebentar...',
+          html: '<i class="fas fa-spinner fa-spin fa-3x" style="color:#2456A6"></i><br><br>Mohon tunggu sebentar...',
           showConfirmButton: false,
           allowOutsideClick: false
         });

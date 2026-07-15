@@ -12,7 +12,7 @@ $normalized_weights = $data['normalized_weights'];
     <div class="flex items-center gap-4">
       <div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/15 text-3xl"><i class="fas fa-brain"></i></div>
       <div>
-        <h1 class="font-serif text-2xl font-bold">Analisis SMART</h1>
+        <h1 class="font-sans text-2xl font-bold">Analisis SMART</h1>
         <p class="text-white/70 text-sm mb-2">Simple Multi-Attribute Rating Technique</p>
         <div class="flex flex-wrap gap-2">
           <span class="text-xs bg-white/15 rounded-full px-3 py-1"><i class="fas fa-users mr-1"></i><?= htmlspecialchars($responden['nama_lengkap']) ?></span>
@@ -133,10 +133,10 @@ $normalized_weights = $data['normalized_weights'];
   <div class="card-gov !bg-gradient-to-br !from-gov-gold-400 !to-gov-gold-600 !text-gov-blue-950 text-center mb-6">
     <i class="fas fa-crown text-4xl mb-2"></i>
     <p class="font-bold uppercase tracking-wide text-sm">#1 &middot; Layanan Terbaik</p>
-    <h2 class="font-serif text-3xl font-bold my-2"><?= htmlspecialchars($winner['nama_layanan']) ?></h2>
+    <h2 class="font-sans text-3xl font-bold my-2"><?= htmlspecialchars($winner['nama_layanan']) ?></h2>
     <p class="text-4xl font-bold"><?= number_format($winner['nilai_smart'], 2) ?></p>
     <p class="text-sm opacity-80 mb-2">Nilai SMART</p>
-    <span class="badge-gov" style="background:rgba(11,31,58,0.15); color:#0B1F3A;"><?= $ket ?></span>
+    <span class="badge-gov" style="background:rgba(11,31,58,0.15); color:#0F172A;"><?= $ket ?></span>
   </div>
 
   <div class="space-y-4 mb-6">
@@ -151,6 +151,11 @@ $normalized_weights = $data['normalized_weights'];
             <div>
               <h3 class="font-bold text-slate-800"><?= htmlspecialchars($hasil['nama_layanan']) ?></h3>
               <?php if ($is_winner): ?><span class="text-xs text-gov-gold-600 font-semibold">🏆 Pemenang</span><?php endif; ?>
+              <?php if (!empty($hasil['incomplete'])): ?>
+                <span class="badge-gov-warning" title="Ada kriteria aktif yang belum dinilai untuk layanan ini, skor mungkin kurang akurat.">
+                  <i class="fas fa-triangle-exclamation"></i> Data Tidak Lengkap
+                </span>
+              <?php endif; ?>
             </div>
           </div>
           <div class="text-right min-w-[140px]">

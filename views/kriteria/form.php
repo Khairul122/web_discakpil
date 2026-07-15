@@ -105,23 +105,23 @@
 
     if (!kode.value.trim() || !/^[A-Z0-9]+$/.test(kode.value)) {
       e.preventDefault(); kode.classList.add('input-gov-invalid'); kode.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kode kriteria wajib diisi dan hanya boleh huruf kapital/angka!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kode kriteria wajib diisi dan hanya boleh huruf kapital/angka!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!nama.value.trim()) {
       e.preventDefault(); nama.classList.add('input-gov-invalid'); nama.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama kriteria wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama kriteria wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!pert.value.trim()) {
       e.preventDefault(); pert.classList.add('input-gov-invalid'); pert.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Pertanyaan wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Pertanyaan wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!bobot.value || bobot.value < 1 || bobot.value > 100) {
       e.preventDefault(); bobot.classList.add('input-gov-invalid'); bobot.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Bobot harus antara 1-100!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Bobot harus antara 1-100!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!jenis.value) {
       e.preventDefault(); jenis.classList.add('input-gov-invalid'); jenis.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Jenis kriteria wajib dipilih!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Jenis kriteria wajib dipilih!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 

@@ -18,7 +18,7 @@
 <div class="card-gov !bg-gradient-to-br !from-gov-blue-800 !to-gov-blue-950 !text-white mb-6">
   <div class="flex items-center justify-between flex-wrap gap-6">
     <div>
-      <h2 class="font-serif text-xl font-bold mb-3"><i class="fas fa-concierge-bell mr-2"></i><?= htmlspecialchars($data['alternatif']['nama_layanan']) ?></h2>
+      <h2 class="font-sans text-xl font-bold mb-3"><i class="fas fa-concierge-bell mr-2"></i><?= htmlspecialchars($data['alternatif']['nama_layanan']) ?></h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-white/85">
         <p><i class="fas fa-users mr-2"></i><strong>Total Penilai:</strong> <?= $data['statistics']['total_penilai'] ?></p>
         <p><i class="fas fa-arrow-up mr-2"></i><strong>Tertinggi:</strong> <?= number_format($data['statistics']['tertinggi'], 2) ?></p>

@@ -14,7 +14,7 @@
           title: 'Peringatan',
           text: "<?= addslashes($_SESSION['error']) ?>",
           confirmButtonText: 'OK',
-          confirmButtonColor: '#1D4E8F'
+          confirmButtonColor: '#2456A6'
         });
       });
       <?php unset($_SESSION['error']); ?>
@@ -27,7 +27,7 @@
           title: 'Berhasil',
           text: "<?= addslashes($_SESSION['success']) ?>",
           confirmButtonText: 'Tutup',
-          confirmButtonColor: '#1D4E8F'
+          confirmButtonColor: '#2456A6'
         });
       });
       <?php unset($_SESSION['success']); ?>
@@ -40,8 +40,8 @@
         text: opts.text || 'Data akan dihapus secara permanen!',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#7A1F2B',
-        cancelButtonColor: '#1D4E8F',
+        confirmButtonColor: '#B91C1C',
+        cancelButtonColor: '#2456A6',
         confirmButtonText: 'Ya, hapus!',
         cancelButtonText: 'Batal'
       }).then((result) => {

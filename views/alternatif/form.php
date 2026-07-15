@@ -98,17 +98,17 @@
 
     if (!kode.value.trim()) {
       e.preventDefault(); kode.classList.add('input-gov-invalid'); kode.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kode layanan wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kode layanan wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     } else if (!/^[A-Z0-9]+$/.test(kode.value)) {
       e.preventDefault(); kode.classList.add('input-gov-invalid'); kode.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kode layanan hanya boleh huruf kapital dan angka!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Kode layanan hanya boleh huruf kapital dan angka!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 
     if (!nama.value.trim()) {
       e.preventDefault(); nama.classList.add('input-gov-invalid'); nama.focus();
-      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama layanan wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Nama layanan wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 

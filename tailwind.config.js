@@ -8,46 +8,46 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        serif: ['Merriweather', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         gov: {
           blue: {
-            950: '#0B1F3A',
-            900: '#0F2B52',
-            800: '#153B6E',
-            700: '#1D4E8F',
-            600: '#2563A8',
-            100: '#E4ECF6',
+            950: '#0F172A',
+            900: '#1E3A8A', // Modern royal blue dark
+            800: '#2563EB', // Primary brand blue (bright & premium)
+            700: '#3B82F6', // Vibrant bright blue
+            600: '#60A5FA', // Sky blue
+            100: '#EFF6FF', // Soft ice-blue backdrop tint
           },
           gold: {
-            600: '#B8860B',
-            400: '#D4AF37',
+            600: '#D97706',
+            400: '#F59E0B',
           },
           maroon: {
-            700: '#7A1F2B',
+            700: '#EF4444', // Cleaner bright red
           },
           green: {
-            700: '#1E6B3E',
+            700: '#10B981', // Cleaner bright emerald green
           },
         },
         surface: {
-          page: '#F4F6F9',
-          card: '#F7F9FC',
+          page: '#F8FAFC',
+          card: '#FFFFFF',
         },
       },
       boxShadow: {
-        'soft-raised': '6px 6px 14px rgba(15,43,82,0.10), -6px -6px 14px rgba(255,255,255,0.75)',
-        'soft-raised-sm': '3px 3px 7px rgba(15,43,82,0.09), -3px -3px 7px rgba(255,255,255,0.7)',
-        'soft-raised-lg': '10px 10px 24px rgba(15,43,82,0.12), -8px -8px 20px rgba(255,255,255,0.8)',
-        'soft-pressed': 'inset 4px 4px 8px rgba(15,43,82,0.12), inset -4px -4px 8px rgba(255,255,255,0.6)',
-        'soft-pressed-sm': 'inset 2px 2px 5px rgba(15,43,82,0.12), inset -2px -2px 5px rgba(255,255,255,0.6)',
-        'soft-focus': '0 0 0 3px rgba(29,78,143,0.25), 3px 3px 7px rgba(15,43,82,0.09)',
+        'soft-raised': '0 10px 30px -10px rgba(79, 70, 229, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(241, 245, 249, 1)',
+        'soft-raised-sm': '0 4px 12px -2px rgba(79, 70, 229, 0.04), 0 0 0 1px rgba(241, 245, 249, 0.8)',
+        'soft-raised-lg': '0 20px 40px -15px rgba(79, 70, 229, 0.08), 0 1px 10px rgba(0, 0, 0, 0.01), 0 0 0 1px rgba(241, 245, 249, 1)',
+        'soft-pressed': 'none',
+        'soft-pressed-sm': 'none',
+        'soft-focus': '0 0 0 4px rgba(37, 99, 235, 0.15)',
       },
       borderRadius: {
-        'gov': '12px',
-        'gov-lg': '16px',
+        'gov': '14px',
+        'gov-lg': '20px',
       },
     },
   },

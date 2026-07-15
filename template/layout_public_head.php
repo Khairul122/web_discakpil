@@ -7,27 +7,27 @@
   <title><?= $page_title ?? 'DISDUKCAPIL Kota Padang' ?></title>
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/app.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/app.css?v=<?= filemtime('assets/css/app.css') ?>" />
   <link rel="shortcut icon" href="assets/images/favicon.png" />
 </head>
 
 <body class="bg-surface-page font-sans text-slate-700 min-h-screen flex flex-col">
-  <header class="bg-gradient-to-r from-gov-blue-900 to-gov-blue-800 text-white shadow-soft-raised-sm sticky top-0 z-30">
+  <header class="bg-white/90 backdrop-blur-md text-slate-800 shadow-soft-raised-sm sticky top-0 z-30 border-b border-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <a href="index.php?controller=landing&action=index" class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-gov bg-gradient-to-b from-gov-gold-400 to-gov-gold-600 shadow-soft-raised-sm">
-          <i class="fas fa-building-columns text-gov-blue-950"></i>
+        <div class="flex h-10 w-10 items-center justify-center rounded-gov bg-gradient-to-br from-gov-blue-800 to-gov-blue-700 shadow-soft-raised-sm text-white">
+          <i class="fas fa-building-columns text-sm"></i>
         </div>
         <div class="leading-tight">
-          <p class="font-serif font-bold text-sm">DISDUKCAPIL</p>
-          <p class="text-xs text-white/70">Kota Padang</p>
+          <p class="font-sans font-bold text-sm text-slate-800">DISDUKCAPIL</p>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Kota Padang</p>
         </div>
       </a>
       <nav class="flex items-center gap-2 text-sm font-medium">
-        <a href="index.php?controller=landing&action=index" class="btn-gov-ghost !text-white hover:!bg-white/10">Beranda</a>
-        <a href="index.php?controller=penilaianKuesioner&action=index" class="btn-gov-ghost !text-white hover:!bg-white/10">Kuesioner</a>
-        <a href="index.php?controller=auth&action=index" class="btn-gov-gold !min-h-0 !py-2">Login</a>
+        <a href="index.php?controller=landing&action=index" class="btn-gov-ghost !text-slate-600 hover:!bg-slate-100 hover:!text-slate-900">Beranda</a>
+        <a href="index.php?controller=penilaianKuesioner&action=index" class="btn-gov-ghost !text-slate-600 hover:!bg-slate-100 hover:!text-slate-900">Kuesioner</a>
+        <a href="index.php?controller=auth&action=index" class="btn-gov-gold !min-h-0 !py-2.5 !px-5 text-xs uppercase font-extrabold tracking-wider">Login</a>
       </nav>
     </div>
   </header>

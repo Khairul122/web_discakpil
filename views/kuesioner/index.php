@@ -7,8 +7,12 @@
     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gov-blue-100 text-gov-blue-800 text-sm font-semibold mb-5">
       <i class="fas fa-star text-gov-gold-600"></i> Survei Kepuasan Masyarakat
     </div>
-    <h1 class="font-serif text-3xl sm:text-5xl font-bold text-gov-blue-900 mb-4">Suara Anda Membangun Layanan Kami</h1>
-    <p class="text-slate-500 text-lg">DISDUKCAPIL Kota Padang</p>
+    <h1 class="font-sans text-2xl sm:text-4xl font-bold text-gov-blue-900 mb-4">
+      Sistem Informasi Penilaian Kepuasan Masyarakat
+    </h1>
+    <p class="text-slate-500 text-sm max-w-2xl mx-auto leading-relaxed font-semibold">
+      Terhadap Layanan Kantor Dinas Kependudukan dan Pencatatan Sipil Kota Padang Menggunakan Metode SMART
+    </p>
   </div>
 
   <form method="POST" action="index.php?controller=penilaianKuesioner&action=submit" id="kuesionerForm" class="card-gov !p-6 sm:!p-10" data-loading-label="Mengirim...">
@@ -147,19 +151,19 @@
     if (!namaResponden.value.trim()) {
       e.preventDefault();
       namaResponden.classList.add('input-gov-invalid');
-      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Nama lengkap wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Nama lengkap wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
     if (!usia.value || usia.value < 1 || usia.value > 120) {
       e.preventDefault();
       usia.classList.add('input-gov-invalid');
-      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Usia harus antara 1-120 tahun!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Usia harus antara 1-120 tahun!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
     if (!pekerjaan.value.trim()) {
       e.preventDefault();
       pekerjaan.classList.add('input-gov-invalid');
-      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Pekerjaan wajib diisi!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Pekerjaan wajib diisi!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 
@@ -167,7 +171,7 @@
     document.querySelectorAll('.kriteria-select').forEach(select => { if (select.value) hasRating = true; });
     if (!hasRating) {
       e.preventDefault();
-      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Mohon memberikan penilaian untuk minimal satu layanan!', confirmButtonColor: '#1D4E8F' });
+      Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Mohon memberikan penilaian untuk minimal satu layanan!', confirmButtonColor: '#2456A6' });
       isValid = false;
     }
 

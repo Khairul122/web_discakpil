@@ -115,8 +115,8 @@
       text: 'Sistem akan menghitung nilai SMART untuk semua responden dan menyimpannya ke tabel hasil_akhir.',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#1E6B3E',
-      cancelButtonColor: '#1D4E8F',
+      confirmButtonColor: '#15803D',
+      cancelButtonColor: '#2456A6',
       confirmButtonText: 'Ya, Hitung Semua!',
       cancelButtonText: 'Batal'
     }).then((result) => {
@@ -145,7 +145,7 @@
                     <details style="margin-top:10px;text-align:left"><summary style="cursor:pointer">Lihat Detail Error</summary>
                     <ul style="font-size:0.85rem">${data.errors.map(err => `<li>${err}</li>`).join('')}</ul></details>`,
                   confirmButtonText: 'Lihat Hasil',
-                  confirmButtonColor: '#B8860B'
+                  confirmButtonColor: '#B45309'
                 }).then((r) => { if (r.isConfirmed) window.location.href = 'index.php?controller=hasil&action=index'; });
               } else {
                 Swal.fire({
@@ -153,7 +153,7 @@
                   title: 'Perhitungan Berhasil!',
                   html: `<p>${data.total_responden} Responden, ${data.total_hasil} Hasil Perhitungan tersimpan.</p>`,
                   confirmButtonText: 'Lihat Hasil',
-                  confirmButtonColor: '#1E6B3E'
+                  confirmButtonColor: '#15803D'
                 }).then((r) => { if (r.isConfirmed) window.location.href = 'index.php?controller=hasil&action=index'; });
               }
             } else {
@@ -161,12 +161,12 @@
                 icon: 'error',
                 title: 'Perhitungan Gagal!',
                 text: data.message || 'Terjadi kesalahan saat menghitung SMART',
-                confirmButtonColor: '#7A1F2B'
+                confirmButtonColor: '#B91C1C'
               });
             }
           })
           .catch(() => {
-            Swal.fire({ icon: 'error', title: 'Terjadi Kesalahan!', text: 'Gagal terhubung ke server.', confirmButtonColor: '#7A1F2B' });
+            Swal.fire({ icon: 'error', title: 'Terjadi Kesalahan!', text: 'Gagal terhubung ke server.', confirmButtonColor: '#B91C1C' });
           });
       }
     });

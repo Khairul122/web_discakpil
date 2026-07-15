@@ -62,21 +62,21 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
 ?>
 
 <!-- Sidebar backdrop (mobile) -->
-<div id="sidebarBackdrop" class="fixed inset-0 bg-gov-blue-950/50 z-30 hidden lg:hidden"></div>
+<div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden lg:hidden"></div>
 
 <!-- Sidebar -->
 <aside id="sidebar"
        class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full lg:translate-x-0 transition-transform duration-300
-              bg-gradient-to-b from-gov-blue-900 to-gov-blue-950 text-white flex flex-col shadow-soft-raised-lg">
-  <div class="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-    <div class="flex h-11 w-11 items-center justify-center rounded-gov bg-gradient-to-b from-gov-gold-400 to-gov-gold-600 shadow-soft-raised-sm">
-      <i class="fas fa-building-columns text-gov-blue-950"></i>
+              bg-white border-r border-slate-100 text-slate-700 flex flex-col shadow-soft-raised-lg">
+  <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
+    <div class="flex h-11 w-11 items-center justify-center rounded-gov bg-gradient-to-br from-gov-blue-800 to-gov-blue-700 shadow-soft-raised-sm text-white">
+      <i class="fas fa-building-columns text-base"></i>
     </div>
     <div>
-      <p class="font-serif font-bold text-sm leading-tight">DISDUKCAPIL</p>
-      <p class="text-xs text-white/60">Kota Padang</p>
+      <p class="font-sans font-bold text-sm leading-tight text-slate-800">DISDUKCAPIL</p>
+      <p class="text-[11px] text-slate-500 font-semibold tracking-wide">Kota Padang</p>
     </div>
-    <button id="sidebarClose" type="button" class="ml-auto lg:hidden text-white/70 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center">
+    <button id="sidebarClose" type="button" class="ml-auto lg:hidden text-slate-400 hover:text-slate-650 min-h-[44px] min-w-[44px] flex items-center justify-center">
       <i class="fas fa-xmark"></i>
     </button>
   </div>
@@ -84,8 +84,8 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
   <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
     <?php if (hasRole(['admin', 'kepala_dinas', 'staff'])): ?>
       <a href="<?= getDashboardUrl(); ?>"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] transition-colors
-                <?= (isActive('admin') || isActive('kepalaDinas') || isActive('staff')) ? 'bg-white/10 border-l-4 border-gov-gold-400 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white' ?>">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= (isActive('admin') || isActive('kepalaDinas') || isActive('staff')) ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
         <i class="fas fa-home w-5 text-center"></i>
         <span>Dashboard</span>
       </a>
@@ -94,27 +94,27 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
     <?php if (hasRole('admin')): ?>
       <div class="pt-2">
         <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.chev').classList.toggle('rotate-180')"
-                class="w-full flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] text-white/75 hover:bg-white/5 hover:text-white transition-colors">
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
           <i class="fas fa-database w-5 text-center"></i>
           <span>Master Data</span>
           <i class="fas fa-chevron-down chev ml-auto text-xs transition-transform"></i>
         </button>
         <div class="pl-4 mt-1 space-y-1 <?= (isActive('alternatif') || isActive('kriteria')) ? '' : 'hidden' ?>">
           <a href="index.php?controller=alternatif&action=index"
-             class="flex items-center gap-3 px-4 py-2.5 rounded-gov text-sm min-h-[44px] transition-colors
-                    <?= isActive('alternatif') ? 'bg-white/10 text-white font-medium' : 'text-white/65 hover:bg-white/5 hover:text-white' ?>">
+             class="flex items-center gap-3 px-4 py-2.5 rounded-gov text-sm min-h-[44px] transition-all duration-200
+                    <?= isActive('alternatif') ? 'bg-gov-blue-100 text-gov-blue-900 font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' ?>">
             <i class="fas fa-list-alt w-5 text-center text-xs"></i>
             <span>Alternatif</span>
           </a>
           <a href="index.php?controller=kriteria&action=index"
-             class="flex items-center gap-3 px-4 py-2.5 rounded-gov text-sm min-h-[44px] transition-colors
-                    <?= isActive('kriteria') ? 'bg-white/10 text-white font-medium' : 'text-white/65 hover:bg-white/5 hover:text-white' ?>">
+             class="flex items-center gap-3 px-4 py-2.5 rounded-gov text-sm min-h-[44px] transition-all duration-200
+                    <?= isActive('kriteria') ? 'bg-gov-blue-100 text-gov-blue-900 font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' ?>">
             <i class="fas fa-sliders-h w-5 text-center text-xs"></i>
             <span>Kriteria</span>
           </a>
           <a href="index.php?controller=subKriteria&action=index"
-             class="flex items-center gap-3 px-4 py-2.5 rounded-gov text-sm min-h-[44px] transition-colors
-                    <?= isActive('subKriteria') ? 'bg-white/10 text-white font-medium' : 'text-white/65 hover:bg-white/5 hover:text-white' ?>">
+             class="flex items-center gap-3 px-4 py-2.5 rounded-gov text-sm min-h-[44px] transition-all duration-200
+                    <?= isActive('subKriteria') ? 'bg-gov-blue-100 text-gov-blue-900 font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' ?>">
             <i class="fas fa-layer-group w-5 text-center text-xs"></i>
             <span>Sub Kriteria</span>
           </a>
@@ -122,22 +122,22 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
       </div>
 
       <a href="index.php?controller=responden&action=index"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] transition-colors
-                <?= isActive('responden') ? 'bg-white/10 border-l-4 border-gov-gold-400 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white' ?>">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= isActive('responden') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
         <i class="fas fa-users w-5 text-center"></i>
         <span>Responden</span>
       </a>
 
       <a href="index.php?controller=penilaian&action=index"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] transition-colors
-                <?= isActive('penilaian') ? 'bg-white/10 border-l-4 border-gov-gold-400 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white' ?>">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= isActive('penilaian') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
         <i class="fas fa-clipboard-check w-5 text-center"></i>
         <span>Penilaian</span>
       </a>
 
       <a href="index.php?controller=hasil&action=index"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] transition-colors
-                <?= isActive('hasil') ? 'bg-white/10 border-l-4 border-gov-gold-400 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white' ?>">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= isActive('hasil') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
         <i class="fas fa-chart-line w-5 text-center"></i>
         <span>Hasil Akhir</span>
       </a>
@@ -145,15 +145,15 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
 
     <?php if (hasRole('kepala_dinas')): ?>
       <a href="index.php?controller=penilaian&action=index"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] transition-colors
-                <?= isActive('penilaian') ? 'bg-white/10 border-l-4 border-gov-gold-400 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white' ?>">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= isActive('penilaian') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
         <i class="fas fa-clipboard-check w-5 text-center"></i>
         <span>Penilaian</span>
       </a>
 
       <a href="index.php?controller=laporan&action=index"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] transition-colors
-                <?= isActive('laporan') ? 'bg-white/10 border-l-4 border-gov-gold-400 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white' ?>">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= isActive('laporan') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
         <i class="fas fa-file-pdf w-5 text-center"></i>
         <span>Laporan</span>
       </a>
@@ -161,9 +161,9 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
   </nav>
 
   <?php if (hasRole(['admin', 'kepala_dinas', 'staff'])): ?>
-    <div class="p-3 border-t border-white/10">
+    <div class="p-3 border-t border-slate-100">
       <a href="<?= $logoutUrl ?>"
-         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-medium min-h-[44px] text-white/75 hover:bg-gov-maroon-700/40 hover:text-white transition-colors">
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors">
         <i class="fas fa-sign-out-alt w-5 text-center"></i>
         <span>Keluar</span>
       </a>
@@ -174,36 +174,36 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
 <!-- Main column -->
 <div class="flex-1 flex flex-col min-w-0 lg:pl-72">
   <!-- Topbar -->
-  <header class="sticky top-0 z-20 flex items-center gap-4 bg-surface-card/95 backdrop-blur border-b border-slate-200 px-4 sm:px-6 py-3 shadow-soft-raised-sm">
+  <header class="sticky top-0 z-20 flex items-center gap-4 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 sm:px-6 py-3 shadow-soft-raised-sm">
     <button id="sidebarOpen" type="button" class="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-gov text-gov-blue-800 hover:bg-gov-blue-100">
       <i class="fas fa-bars text-lg"></i>
     </button>
     <div class="flex-1"></div>
     <div class="relative" id="userMenuWrapper">
-      <button id="userMenuButton" type="button" class="flex items-center gap-3 rounded-gov px-2 py-1.5 hover:bg-gov-blue-100 transition-colors min-h-[44px]">
-        <div class="h-9 w-9 rounded-full bg-gradient-to-b from-gov-blue-600 to-gov-blue-800 flex items-center justify-center text-white shadow-soft-raised-sm">
+      <button id="userMenuButton" type="button" class="flex items-center gap-3 rounded-gov px-2.5 py-1.5 hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all min-h-[44px]">
+        <div class="h-9 w-9 rounded-full bg-gradient-to-br from-gov-blue-800 to-gov-blue-700 flex items-center justify-center text-white shadow-soft-raised-sm">
           <i class="fas fa-user text-sm"></i>
         </div>
         <div class="hidden sm:block text-left">
-          <p class="text-sm font-semibold text-slate-800 leading-tight"><?= htmlspecialchars($nama) ?></p>
-          <p class="text-xs text-slate-500 leading-tight"><?= htmlspecialchars($roleDisplay) ?></p>
+          <p class="text-sm font-bold text-slate-800 leading-tight"><?= htmlspecialchars($nama) ?></p>
+          <p class="text-[10px] text-slate-400 leading-tight uppercase font-extrabold tracking-wider mt-0.5"><?= htmlspecialchars($roleDisplay) ?></p>
         </div>
-        <i class="fas fa-chevron-down text-xs text-slate-400"></i>
+        <i class="fas fa-chevron-down text-xs text-slate-400 ml-1"></i>
       </button>
-      <div id="userMenuDropdown" class="hidden absolute right-0 mt-2 w-56 card-gov !p-2 z-30">
-        <div class="px-3 py-2 border-b border-slate-200 mb-1">
-          <p class="text-sm font-semibold text-slate-800"><?= htmlspecialchars($nama) ?></p>
-          <p class="text-xs text-slate-500">Role: <?= htmlspecialchars($roleDisplay) ?></p>
+      <div id="userMenuDropdown" class="hidden absolute right-0 mt-2 w-56 card-gov !p-2 z-30 shadow-soft-raised-lg border border-slate-150 bg-white">
+        <div class="px-3 py-2 border-b border-slate-100 mb-1">
+          <p class="text-sm font-bold text-slate-800"><?= htmlspecialchars($nama) ?></p>
+          <p class="text-xs text-slate-400 mt-0.5">Role: <?= htmlspecialchars($roleDisplay) ?></p>
         </div>
         <?php if (in_array($userRole, ['admin', 'kepala_dinas', 'staff'])): ?>
-          <a href="<?= getDashboardUrl(); ?>" class="flex items-center gap-2 px-3 py-2 rounded-gov text-sm text-slate-700 hover:bg-gov-blue-100">
-            <i class="fas fa-gauge text-gov-blue-700 w-4"></i> Dashboard
+          <a href="<?= getDashboardUrl(); ?>" class="flex items-center gap-2 px-3 py-2.5 rounded-gov text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+            <i class="fas fa-gauge text-gov-blue-800 w-4"></i> Dashboard
           </a>
-          <a href="<?= $logoutUrl ?>" class="flex items-center gap-2 px-3 py-2 rounded-gov text-sm text-gov-maroon-700 hover:bg-red-50">
+          <a href="<?= $logoutUrl ?>" class="flex items-center gap-2 px-3 py-2.5 rounded-gov text-sm text-rose-600 hover:bg-rose-50 transition-colors">
             <i class="fas fa-power-off w-4"></i> Keluar
           </a>
         <?php else: ?>
-          <a href="index.php?controller=auth&action=index" class="flex items-center gap-2 px-3 py-2 rounded-gov text-sm text-slate-700 hover:bg-gov-blue-100">
+          <a href="index.php?controller=auth&action=index" class="flex items-center gap-2 px-3 py-2.5 rounded-gov text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <i class="fas fa-right-to-bracket w-4"></i> Login
           </a>
         <?php endif; ?>

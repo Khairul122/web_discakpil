@@ -19,7 +19,7 @@
   <div class="flex items-center gap-5">
     <div class="flex h-20 w-20 items-center justify-center rounded-gov bg-white/15 text-4xl flex-shrink-0"><i class="fas fa-user"></i></div>
     <div>
-      <h2 class="font-serif text-2xl font-bold"><?= htmlspecialchars($data['responden']['nama_lengkap']) ?></h2>
+      <h2 class="font-sans text-2xl font-bold"><?= htmlspecialchars($data['responden']['nama_lengkap']) ?></h2>
       <p class="text-white/70">Responden DISDUKCAPIL</p>
     </div>
   </div>

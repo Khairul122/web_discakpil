@@ -5,7 +5,7 @@
 <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
   <div>
     <h1 class="text-2xl font-bold text-slate-800">Selamat Datang, <?= htmlspecialchars($data['user']['nama_lengkap']) ?>!</h1>
-    <p class="text-slate-500">Dashboard Kepala Dinas - Sistem DISDUKCAPIL Kota Padang</p>
+    <p class="text-slate-500">Dashboard Kepala Dinas - Sistem Penilaian Kepuasan Masyarakat Kantor DISDUKCAPIL Kota Padang (SMART)</p>
   </div>
   <span class="badge-gov-info"><i class="fas fa-user-tie"></i> <?= ucfirst($data['user']['role']) ?></span>
 </div>
@@ -150,7 +150,7 @@
       datasets: [{
         label: 'Jumlah Kriteria',
         data: [<?= $benefitCount ?>, <?= $costCount ?>],
-        backgroundColor: ['#1D4E8F', '#D4AF37'],
+        backgroundColor: ['#2563EB', '#F59E0B'],
         borderRadius: 6
       }]
     },
