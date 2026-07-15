@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 15, 2026 at 11:13 AM
+-- Generation Time: Jul 15, 2026 at 02:13 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -447,7 +447,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id_user`, `username`, `password`, `nama_lengkap`, `nip`, `role`, `created_at`) VALUES
 (1, 'admin', '$2y$10$TvUkVDZ9eFwF6Fyjha/s/OUh25thVXflceLHtvi4PWs7BN5axRKzS', 'ADMINISTRATOR SISTEM', '19900101 201001 2 002', 'admin', '2026-01-20 13:33:21'),
-(2, 'kadis', '8b21bea2277220877c793bc0669171db', 'TEDDY ANTONIUS', '19720412 199803 1 002', 'kepala_dinas', '2026-01-20 13:33:21');
+(2, 'kadis', '$2y$10$TvUkVDZ9eFwF6Fyjha/s/OUh25thVXflceLHtvi4PWs7BN5axRKzS', 'TEDDY ANTONIUS', '19720412 199803 1 002', 'kepala_dinas', '2026-01-20 13:33:21');
 
 --
 -- Indexes for dumped tables
