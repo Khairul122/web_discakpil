@@ -96,10 +96,8 @@
 
 <div class="card-gov">
   <h3 class="font-bold text-slate-800 mb-4">Menu Laporan & Analisis</h3>
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+  <div class="grid grid-cols-1 gap-3">
     <a href="index.php?controller=cetak&action=index" class="btn-gov-primary w-full"><i class="fas fa-file-alt"></i> Laporan Lengkap</a>
-    <a href="index.php?controller=alternatif&action=index" class="btn-gov-secondary w-full"><i class="fas fa-list"></i> Daftar Layanan</a>
-    <a href="index.php?controller=hasil&action=index" class="btn-gov-gold w-full"><i class="fas fa-chart-bar"></i> Hasil SMART</a>
   </div>
 </div>
 

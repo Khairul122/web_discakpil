@@ -19,8 +19,8 @@ class PenilaianController
             exit;
         }
 
-        // Role check - admin, kepala_dinas, dan staff yang boleh akses
-        $allowedRoles = ['admin', 'kepala_dinas', 'staff'];
+        // Role check - hanya admin dan staff yang boleh akses (kepala_dinas dibatasi ke Dashboard + Cetak Laporan)
+        $allowedRoles = ['admin', 'staff'];
         if (!in_array($_SESSION['role'], $allowedRoles)) {
             $_SESSION['error'] = 'Anda tidak memiliki akses ke halaman ini!';
             header('Location: index.php?controller=auth&action=index');
