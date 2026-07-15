@@ -51,6 +51,23 @@
       });
     }
 
+    function govConfirmLogout(url) {
+      Swal.fire({
+        title: 'Konfirmasi Keluar',
+        text: 'Apakah Anda yakin ingin keluar dari sistem?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#B91C1C',
+        cancelButtonColor: '#2456A6',
+        confirmButtonText: 'Ya, Keluar!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = url;
+        }
+      });
+    }
+
     document.querySelectorAll('form[data-loading-label]').forEach(function (form) {
       form.addEventListener('submit', function () {
         const button = form.querySelector('button[type="submit"]');

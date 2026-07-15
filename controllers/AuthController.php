@@ -37,6 +37,7 @@ class AuthController
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
                 $_SESSION['role'] = $user['role'];
+                $_SESSION['success'] = 'Selamat datang kembali, ' . $user['nama_lengkap'] . '! Anda berhasil login.';
 
                 // Optional: Auto-migrate MD5 to bcrypt (check if hash is 32 chars hex)
                 $storedPassword = $user['password'];
@@ -58,8 +59,14 @@ class AuthController
 
     public function logout()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         session_unset();
         session_destroy();
+        
+        session_start();
+        $_SESSION['success'] = 'Anda telah berhasil keluar dari sistem.';
         header('Location: index.php?controller=landing&action=index');
         exit;
     }

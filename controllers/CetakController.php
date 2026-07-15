@@ -6,6 +6,7 @@ require_once 'models/PdfHelper.php';
 class CetakController
 {
     private $laporanModel;
+    private $conn;
 
     public function __construct($connection)
     {
@@ -25,6 +26,7 @@ class CetakController
             exit;
         }
 
+        $this->conn = $connection;
         $this->laporanModel = new LaporanModel($connection);
     }
 
@@ -125,6 +127,8 @@ class CetakController
             'filter_tahun' => $_GET['tahun'] ?? '',
             'period_label' => $period_label,
             'filter_qs' => $this->currentFilterQueryString(),
+            'kadis' => PdfHelper::getKepalaDinas($this->conn),
+            'petugas' => PdfHelper::getPetugas($this->conn, $_SESSION['user_id'] ?? 0),
             'user' => [
                 'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Admin',
                 'username' => $_SESSION['username'] ?? '',
@@ -133,6 +137,47 @@ class CetakController
         ];
 
         require_once 'views/cetak/index.php';
+    }
+
+    public function saveTtd()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_SESSION['role'] !== 'admin') {
+                $_SESSION['error'] = 'Anda tidak memiliki hak akses untuk mengubah TTD!';
+                header('Location: index.php?controller=cetak&action=index&tab=ttd' . $this->currentFilterQueryString());
+                exit;
+            }
+
+            $kadis_nama = trim($_POST['kadis_nama'] ?? '');
+            $kadis_nip = trim($_POST['kadis_nip'] ?? '');
+            $petugas_nama = trim($_POST['petugas_nama'] ?? '');
+            $petugas_nip = trim($_POST['petugas_nip'] ?? '');
+
+            try {
+                $this->conn->beginTransaction();
+
+                // 1. Update Kepala Dinas (role = 'kepala_dinas')
+                $stmt = $this->conn->prepare("UPDATE users SET nama_lengkap = :nama, nip = :nip WHERE role = 'kepala_dinas'");
+                $stmt->execute([':nama' => $kadis_nama, ':nip' => $kadis_nip]);
+
+                // 2. Update Petugas Pelayanan (logged-in user)
+                $stmt = $this->conn->prepare("UPDATE users SET nama_lengkap = :nama, nip = :nip WHERE id_user = :id_user");
+                $stmt->execute([':nama' => $petugas_nama, ':nip' => $petugas_nip, ':id_user' => $_SESSION['user_id']]);
+
+                // Update session
+                $_SESSION['nama_lengkap'] = $petugas_nama;
+
+                $this->conn->commit();
+                $_SESSION['success'] = 'Pengaturan Tanda Tangan berhasil disimpan!';
+            } catch (Exception $e) {
+                if ($this->conn->inTransaction()) {
+                    $this->conn->rollBack();
+                }
+                $_SESSION['error'] = 'Gagal menyimpan pengaturan: ' . $e->getMessage();
+            }
+        }
+        header('Location: index.php?controller=cetak&action=index&tab=ttd' . $this->currentFilterQueryString());
+        exit;
     }
 
     // ========================================
@@ -255,9 +300,9 @@ class CetakController
               </tbody>
             </table>';
 
-        $nama_petugas = isset($_SESSION['nama_lengkap']) ? strtoupper($_SESSION['nama_lengkap']) : 'ADMIN PETUGAS';
-        $nama_kepala_dinas = PdfHelper::getKepalaDinasName($this->laporanModel->conn);
-        echo PdfHelper::signatureBlock($nama_kepala_dinas, $nama_petugas);
+        $kadis_data = PdfHelper::getKepalaDinas($this->laporanModel->conn);
+        $petugas_data = PdfHelper::getPetugas($this->laporanModel->conn, $_SESSION['user_id'] ?? 0);
+        echo PdfHelper::signatureBlock($kadis_data['nama'], $kadis_data['nip'], $petugas_data['nama'], $petugas_data['nip']);
 
         echo '</body></html>';
         return ob_get_clean();
@@ -287,9 +332,9 @@ class CetakController
         echo PdfHelper::kopSurat('RINGKASAN KEPUASAN PER LAYANAN', 'Periode: ' . ($period_label ?? date('F Y')));
         echo $this->ringkasanLayananTableHTML($ringkasan_layanan, '');
 
-        $nama_petugas = isset($_SESSION['nama_lengkap']) ? strtoupper($_SESSION['nama_lengkap']) : 'ADMIN PETUGAS';
-        $nama_kepala_dinas = PdfHelper::getKepalaDinasName($this->laporanModel->conn);
-        echo PdfHelper::signatureBlock($nama_kepala_dinas, $nama_petugas);
+        $kadis_data = PdfHelper::getKepalaDinas($this->laporanModel->conn);
+        $petugas_data = PdfHelper::getPetugas($this->laporanModel->conn, $_SESSION['user_id'] ?? 0);
+        echo PdfHelper::signatureBlock($kadis_data['nama'], $kadis_data['nip'], $petugas_data['nama'], $petugas_data['nip']);
         echo '</body></html>';
         $html = ob_get_clean();
 

@@ -70,7 +70,6 @@
 
       <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
         <p>&copy; <?= date('Y') ?> Dinas Kependudukan dan Pencatatan Sipil Kota Padang. Hak Cipta Dilindungi.</p>
-        <p class="flex items-center gap-1">Dibuat dengan <i class="fas fa-heart text-rose-600 animate-pulse"></i> oleh Tim IT DISDUKCAPIL</p>
       </div>
     </div>
   </footer>
@@ -89,6 +88,19 @@
         });
       });
       <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['success'])): ?>
+      window.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil',
+          text: "<?= addslashes($_SESSION['success']) ?>",
+          confirmButtonText: 'Tutup',
+          confirmButtonColor: '#2456A6'
+        });
+      });
+      <?php unset($_SESSION['success']); ?>
     <?php endif; ?>
   </script>
 </body>

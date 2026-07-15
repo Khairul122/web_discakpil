@@ -87,21 +87,48 @@ class PdfHelper
                 </div>';
     }
 
-    // Ambil nama Kepala Dinas (user dengan role kepala_dinas) dari database
-    public static function getKepalaDinasName(PDO $conn): string
+    // Ambil data Kepala Dinas dari database
+    public static function getKepalaDinas(PDO $conn): array
     {
-        $nama_kepala_dinas = 'TEDDY ANTONIUS';
+        $data = ['nama' => 'TEDDY ANTONIUS', 'nip' => '19720412 199803 1 002'];
         try {
-            $stmt = $conn->prepare("SELECT nama_lengkap FROM users WHERE role = 'kepala_dinas' LIMIT 1");
+            $stmt = $conn->prepare("SELECT nama_lengkap, nip FROM users WHERE role = 'kepala_dinas' LIMIT 1");
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($result && isset($result['nama_lengkap'])) {
-                $nama_kepala_dinas = strtoupper($result['nama_lengkap']);
+            if ($result) {
+                $data['nama'] = strtoupper($result['nama_lengkap']);
+                if (!empty($result['nip'])) {
+                    $data['nip'] = $result['nip'];
+                }
             }
         } catch (Exception $e) {
             error_log('Error getting kepala dinas: ' . $e->getMessage());
         }
-        return $nama_kepala_dinas;
+        return $data;
+    }
+
+    // Ambil data Petugas Pelayanan berdasarkan id_user dari database
+    public static function getPetugas(PDO $conn, $id_user): array
+    {
+        $data = ['nama' => 'ADMIN PETUGAS', 'nip' => '19900101 201001 2 002'];
+        if (!$id_user) {
+            return $data;
+        }
+        try {
+            $stmt = $conn->prepare("SELECT nama_lengkap, nip FROM users WHERE id_user = :id_user LIMIT 1");
+            $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $data['nama'] = strtoupper($result['nama_lengkap']);
+                if (!empty($result['nip'])) {
+                    $data['nip'] = $result['nip'];
+                }
+            }
+        } catch (Exception $e) {
+            error_log('Error getting petugas: ' . $e->getMessage());
+        }
+        return $data;
     }
 
     public static function tanggalIndonesia(): string
@@ -115,7 +142,7 @@ class PdfHelper
         return str_replace(array_keys($bulan_indonesia), array_values($bulan_indonesia), date('d F Y'));
     }
 
-    public static function signatureBlock(string $nama_kepala_dinas, string $nama_petugas): string
+    public static function signatureBlock(string $nama_kepala_dinas, string $nip_kepala_dinas, string $nama_petugas, string $nip_petugas): string
     {
         $tanggal = self::tanggalIndonesia();
         return '<div class="signature-section" style="margin-top: 30px;">
@@ -128,7 +155,7 @@ class PdfHelper
                                 Kota Padang<br>
                                 <br><br><br><br>
                                 <span style="font-weight: bold; text-decoration: underline;">' . htmlspecialchars($nama_kepala_dinas) . '</span><br>
-                                NIP. 19720412 199803 1 002
+                                NIP. ' . htmlspecialchars($nip_kepala_dinas) . '
                             </td>
                             <td width="30%" style="border: none;"></td>
                             <td width="25%" style="vertical-align: top; text-align: left; border: none;">
@@ -138,7 +165,7 @@ class PdfHelper
                                 DISDUKCAPIL Kota Padang<br>
                                 <br><br><br><br>
                                 <span style="font-weight: bold; text-decoration: underline;">' . htmlspecialchars($nama_petugas) . '</span><br>
-                                NIP. 19900101 201001 2 002
+                                NIP. ' . htmlspecialchars($nip_petugas) . '
                             </td>
                         </tr>
                     </table>

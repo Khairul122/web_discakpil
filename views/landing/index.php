@@ -49,8 +49,22 @@
               <i class="fas fa-check text-sm"></i>
             </div>
             <div>
-              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">KTP-el Terbit</p>
-              <p class="text-xs font-bold text-slate-800">100% Selesai</p>
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Hasil SMART</p>
+              <p class="text-xs font-bold text-slate-800">
+                <?php 
+                $nilai = $data['rerata_smart'];
+                if ($nilai >= 88.31) {
+                    $mutu = 'Sangat Baik';
+                } elseif ($nilai >= 76.61) {
+                    $mutu = 'Baik';
+                } elseif ($nilai >= 65.00) {
+                    $mutu = 'Cukup';
+                } else {
+                    $mutu = 'Kurang';
+                }
+                echo $mutu;
+                ?>
+              </p>
             </div>
           </div>
           
@@ -62,35 +76,37 @@
               </div>
               <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">IKM Rate</p>
             </div>
-            <p class="text-lg font-extrabold text-slate-800">4.87 / 5.0</p>
+            <p class="text-lg font-extrabold text-slate-800"><?= number_format($data['rerata_smart'] / 20, 2) ?> / 5.0</p>
           </div>
 
           <!-- Service Tracker UI Inside Mockup -->
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Antrean Layanan</h4>
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Mutu Layanan</h4>
               <span class="badge-gov-primary !text-[9px]">Real-Time</span>
             </div>
             
-            <div class="space-y-1.5">
-              <div class="flex justify-between text-xs font-bold">
-                <span class="text-slate-800">Kartu Keluarga</span>
-                <span class="text-gov-blue-800">88%</span>
-              </div>
-              <div class="bar-gov-track"><div class="bar-gov-fill" style="width: 88%"></div></div>
-            </div>
-            
-            <div class="space-y-1.5">
-              <div class="flex justify-between text-xs font-bold">
-                <span class="text-slate-800">Akta Kelahiran</span>
-                <span class="text-gov-blue-800">95%</span>
-              </div>
-              <div class="bar-gov-track"><div class="bar-gov-fill" style="width: 95%"></div></div>
-            </div>
+            <?php if (!empty($data['layanan_rating'])): ?>
+              <?php foreach ($data['layanan_rating'] as $lr): ?>
+                <div class="space-y-1.5">
+                  <div class="flex justify-between text-xs font-bold">
+                    <span class="text-slate-800 text-[11px] truncate max-w-[150px]"><?= htmlspecialchars($lr['nama_layanan']) ?></span>
+                    <span class="text-gov-blue-800"><?= number_format($lr['rerata'], 1, ',', '.') ?>%</span>
+                  </div>
+                  <div class="bar-gov-track"><div class="bar-gov-fill" style="width: <?= max(5, min(100, $lr['rerata'])) ?>%"></div></div>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p class="text-xs text-slate-400">Belum ada data perhitungan SMART.</p>
+            <?php endif; ?>
 
             <!-- Inner Feedback Mock -->
             <div class="bg-slate-50 border border-slate-100 rounded-gov p-3 mt-4 text-[10px] text-slate-500 italic leading-relaxed">
-              "Kuesioner kependudukan sangat mudah diisi, terimakasih layanannya cepat!"
+              <?php if (!empty($data['recent_responden'])): ?>
+                "Responden terakhir: <strong><?= htmlspecialchars($data['recent_responden']['nama_lengkap']) ?></strong> baru saja mengisi kuesioner pada <?= date('d M Y', strtotime($data['recent_responden']['tanggal_isi'])) ?>."
+              <?php else: ?>
+                "Partisipasi Anda sangat berarti bagi kami untuk meningkatkan kualitas layanan kependudukan."
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -107,20 +123,20 @@
       <div class="lg:col-span-5 space-y-6">
         <div class="grid grid-cols-2 gap-4">
           <div class="card-gov text-center p-6 hover:-translate-y-1.5 transition-all duration-300">
-            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1">98.4%</p>
-            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Persentase Kepuasan</p>
+            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1"><?= number_format($data['rerata_smart'], 1, ',', '.') ?>%</p>
+            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Indeks Kepuasan</p>
           </div>
           <div class="card-gov text-center p-6 hover:-translate-y-1.5 transition-all duration-300">
-            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1">15 Mnt</p>
-            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Pembuatan KIA Online</p>
+            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1"><?= $data['total_responden'] ?></p>
+            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Responden Berpartisipasi</p>
           </div>
           <div class="card-gov text-center p-6 hover:-translate-y-1.5 transition-all duration-300">
-            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1">24 Jam</p>
-            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Akses Portal Kuesioner</p>
+            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1"><?= $data['total_penilaian'] ?></p>
+            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Kuesioner Masuk</p>
           </div>
           <div class="card-gov text-center p-6 hover:-translate-y-1.5 transition-all duration-300">
-            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1">100%</p>
-            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Transparansi Data</p>
+            <p class="text-3xl font-extrabold text-gov-blue-800 mb-1"><?= $data['total_alternatif'] ?></p>
+            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Layanan Dievaluasi</p>
           </div>
         </div>
       </div>

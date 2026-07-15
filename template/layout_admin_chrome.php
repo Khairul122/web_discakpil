@@ -163,7 +163,7 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
 
   <?php if (hasRole(['admin', 'kepala_dinas', 'staff'])): ?>
     <div class="p-3 border-t border-slate-100">
-      <a href="<?= $logoutUrl ?>"
+      <a href="#" onclick="event.preventDefault(); govConfirmLogout('<?= $logoutUrl ?>')"
          class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors">
         <i class="fas fa-sign-out-alt w-5 text-center"></i>
         <span>Keluar</span>
@@ -200,7 +200,7 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
           <a href="<?= getDashboardUrl(); ?>" class="flex items-center gap-2 px-3 py-2.5 rounded-gov text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <i class="fas fa-gauge text-gov-blue-800 w-4"></i> Dashboard
           </a>
-          <a href="<?= $logoutUrl ?>" class="flex items-center gap-2 px-3 py-2.5 rounded-gov text-sm text-rose-600 hover:bg-rose-50 transition-colors">
+          <a href="#" onclick="event.preventDefault(); govConfirmLogout('<?= $logoutUrl ?>')" class="flex items-center gap-2 px-3 py-2.5 rounded-gov text-sm text-rose-600 hover:bg-rose-50 transition-colors">
             <i class="fas fa-power-off w-4"></i> Keluar
           </a>
         <?php else: ?>
