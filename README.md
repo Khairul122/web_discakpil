@@ -137,7 +137,7 @@ Jika Anda menemui kendala atau ingin memberikan dukungan donasi kepada pengemban
 
 | Hubungi Support | Pindai Kode QR Donasi |
 | :---: | :---: |
-| ![Support Team](assets/images/support.png) | ![Scan QR](assets/images/QR.jpeg) |
+| ![Support Team](assets/images/support.png) | ![Scan QR](assets/QR.jpeg) |
 | **Tim Teknis Synectra**<br>✉️ [synectra24@gmail.com](mailto:synectra24@gmail.com)<br>📞 [+62 888-0737-6359](https://wa.me/6288807376359) | **Scan QR Donasi Support**<br>Salurkan dukungan Anda secara langsung |
 
 ---
