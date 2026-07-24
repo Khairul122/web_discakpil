@@ -1,151 +1,180 @@
-# Sistem Informasi Penilaian Kepuasan Masyarakat (SI-IKM SMART)
-### Dinas Kependudukan dan Pencatatan Sipil Kota Padang
+# 🇮🇩 SI-IKM SMART — DISDUKCAPIL Kota Padang
+
+> **Sistem Informasi Indeks Kepuasan Masyarakat (IKM) Berbasis Sistem Pendukung Keputusan (SPK) Metode SMART (Simple Multi-Attribute Rating Technique)**  
+> *Dinas Kependudukan dan Pencatatan Sipil Kota Padang — Berdasarkan Standardisasi **Permenpan-RB Nomor 14 Tahun 2017***
 
 ---
 
-[![Official Logo](assets/logo-git.png)](file:///c:/laragon/www/web_discakpil/assets/logo-git.png)
+## 📌 1. Deskripsi Proyek
 
-## 📌 Deskripsi Proyek
-SI-IKM SMART adalah platform berbasis web yang dikembangkan khusus untuk **Dinas Kependudukan dan Pencatatan Sipil (DISDUKCAPIL) Kota Padang**. Aplikasi ini berfungsi untuk mengukur, menganalisis, dan melaporkan Indeks Kepuasan Masyarakat (IKM) terhadap layanan kependudukan secara digital dan otomatis menggunakan algoritma **SMART (Simple Multi-Attribute Rating Technique)**.
+**SI-IKM SMART** adalah platform berbasis web murni (PHP Native MVC) yang dikembangkan khusus untuk **Dinas Kependudukan dan Pencatatan Sipil (DISDUKCAPIL) Kota Padang**. Aplikasi ini berfungsi untuk mengukur, menganalisis, dan mengevaluasi Indeks Kepuasan Masyarakat (IKM) terhadap layanan kependudukan secara digital dan otomatis menggunakan algoritma **SMART (Simple Multi-Attribute Rating Technique)**.
 
-Aplikasi ini memfasilitasi survei kepuasan bagi masyarakat umum, pengolahan data kriteria dan sub-kriteria dinamis oleh administrator, serta pembuatan laporan berstandar formal (PDF/Cetak) untuk kebutuhan pimpinan.
-
----
-
-## 🛠️ Fitur Utama
-*   **Pengisian Kuesioner Publik**: Halaman survei interaktif yang ramah pengguna (user-friendly) untuk mengumpulkan umpan balik masyarakat mengenai layanan KTP-el, KK, KIA, Akta Lahir, dll.
-*   **Sistem Evaluasi SMART**: Algoritma perhitungan yang menormalisasi bobot kriteria, menghitung nilai utilitas sub-kriteria, dan merangkum skor akhir IKM untuk setiap alternatif layanan.
-*   **Dashboard Statistik Dinamis**: Panel administrasi yang menyajikan grafik performa layanan, jumlah responden harian, distribusi bobot kriteria, serta aktivitas terbaru secara *real-time*.
-*   **Pengaturan TTD & Laporan Kustom**: Sistem fleksibel untuk memperbarui Nama dan NIP Penandatangan Laporan (Kepala Dinas & Petugas) langsung melalui tab cetak laporan.
-*   **Cetak PDF Formal**: Menghasilkan dokumen cetak landscape presisi tinggi dengan kop surat dinas yang rapi, tabel hitam formal, dan logo kementerian.
-*   **Otentikasi & Keamanan**: Proteksi berlapis untuk role Admin, Kepala Dinas, dan Staff menggunakan enkripsi kata sandi serta modal interaktif SweetAlert2.
+Aplikasi ini memfasilitasi survei kepuasan bagi masyarakat umum, pengolahan data kriteria dan sub-kriteria dinamis oleh administrator, serta pembuatan laporan berstandar formal (PDF/Cetak Landscape F4) ber-Kop Surat resmi Kementerian Dalam Negeri/Disdukcapil untuk pimpinan instansi.
 
 ---
 
-## 📂 Struktur Direktori Project
+## 🛠️ 2. Fitur Utama Sistem
+
+*   **📋 Pengisian Kuesioner Publik Interaktif**: Halaman survei interaktif yang ramah pengguna (user-friendly) untuk mengumpulkan umpan balik masyarakat mengenai 5 layanan kependudukan (KTP-el, KK, KIA, Akta Lahir, Surat Pindah).
+*   **🧮 Engine Evaluasi Metode SMART**: Algoritma perhitungan terpusat yang menormalisasi bobot kriteria, menghitung nilai utilitas sub-kriteria, dan merangkum skor akhir IKM untuk setiap alternatif layanan.
+*   **📊 Dashboard Statistik Multi-Role**:
+    *   **Administrator**: Panel administrasi lengkap untuk manajemen data master kriteria, sub-kriteria, alternatif layanan, responden, matriks penilaian, dan hasil SMART.
+    *   **Kepala Dinas (Eksekutif)**: Panel eksekutif ringkas khusus pemantauan indikator kinerja utama IKM dan cetak laporan resmi.
+*   **✒️ Pengaturan TTD & Laporan Dinamis**: Sistem fleksibel untuk memperbarui Nama dan NIP Penandatangan Laporan (Kepala Dinas & Petugas) langsung melalui database.
+*   **🖨️ Cetak PDF Formal (F4 Landscape)**: Menghasilkan dokumen cetak resmi berpresisi tinggi dengan Kop Surat dinas, tabel formal, dan logo kementerian menggunakan TCPDF.
+*   **🔔 Dialog Box Interaktif SweetAlert2**: Proteksi aksi hapus/keluar serta notifikasi flash session yang elegan.
+
+---
+
+## 🧮 3. Metodologi SMART (Simple Multi-Attribute Rating Technique)
+
+Sistem mengimplementasikan metode SMART dengan tahapan matematis sebagai berikut:
+
+1. **Normalisasi Bobot Kriteria ($w_j$)**:
+   $$w_j = \frac{W_j}{\sum_{i=1}^{m} W_i}$$
+   *(Mengubah bobot kriteria menjadi proporsi terimbang dengan total $\sum w_j = 1.0$)*
+
+2. **Nilai Utility Sub-Kriteria ($u_j$)**:
+   Konversi skala kepuasan Likert 4 tingkat ke rentang $[0 - 100]$:
+   - **Sangat Baik / Sangat Sesuai**: Utility $100$
+   - **Baik / Sesuai**: Utility $75$
+   - **Cukup Baik / Cukup Sesuai**: Utility $50$
+   - **Kurang Baik / Tidak Sesuai**: Utility $25$
+
+3. **Perhitungan Nilai Akhir SMART ($V(A_i)$)**:
+   $$V(A_i) = \sum_{j=1}^{m} (w_j \times u_j(A_i))$$
+
+4. **Kategori Mutu Pelayanan (IKM)**:
+   - $80.00 - 100.00$ : **Sangat Baik** (Mutu A)
+   - $60.00 - 79.99$ : **Baik** (Mutu B)
+   - $40.00 - 59.99$ : **Cukup** (Mutu C)
+   - $20.00 - 39.99$ : **Kurang** (Mutu D)
+
+---
+
+## 🏗️ 4. Arsitektur & Tech Stack
+
+| Layer | Teknologi / Pustaka |
+| :--- | :--- |
+| **Core Backend** | PHP Native (OOP & MVC Pattern) |
+| **Database** | MySQL / MariaDB (PDO Handler dengan Prepared Statements) |
+| **Styling UI** | Tailwind CSS v3.4 (dikompilasi dari `assets/css/tailwind-input.css`) |
+| **Interactive UI** | SweetAlert2, Chart.js, FontAwesome v6, Feather Icons |
+| **PDF Generator** | TCPDF v6.10 (`tecnickcom/tcpdf`) |
+
+---
+
+## 🔐 5. Kredensial Login Default
+
+| Role | Username | Password | Hak Akses Utama |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin` | `admin123` | Akses penuh (Master Data, Responden, Penilaian, Hasil SMART, Cetak Laporan) |
+| **Kepala Dinas** | `kadis` | `admin123` | Akses eksekutif (Dashboard IKM & Cetak Laporan PDF) |
+
+---
+
+## 📂 6. Struktur Direktori Proyek
+
 ```
 web_discakpil/
-├── assets/                 # Aset Frontend (CSS, JS, Images)
+├── assets/                 # Aset Frontend (Compiled CSS, Images, JS)
 │   ├── css/                # Style kompilasi Tailwind CSS (app.css)
-│   ├── images/             # Berkas logo, qr-code, & infografis
-│   └── js/                 # Skrip pendukung frontend
+│   └── images/             # Berkas logo & aset grafis
 ├── config/                 # Konfigurasi Inti Aplikasi
-│   └── Database.php        # Pengaturan PDO database connection
-├── controllers/            # Controller (MVC Pattern)
+│   └── koneksi.php         # PDO Database Connection Handler
+├── controllers/            # Controller Layer (MVC)
 │   ├── AdminController.php
 │   ├── AlternatifController.php
 │   ├── AuthController.php
 │   ├── CetakController.php
-│   ├── DashboardController.php
 │   ├── HasilController.php
+│   ├── KepalaDinasController.php
 │   ├── KriteriaController.php
 │   ├── LandingController.php
-│   ├── LaporanController.php
 │   ├── PenilaianController.php
+│   ├── PenilaianKuesionerController.php
 │   ├── RespondenController.php
 │   └── SubKriteriaController.php
-├── database/               # Berkas skema SQL & migrasi data
-├── docs/                   # Dokumentasi teknis tambahan
-├── models/                 # Model Data untuk manipulasi DB (MVC)
+├── database/               # SQL Schema & Dump Data
+│   └── db_disdukcapil_smart (2).sql
+├── docs/                   # Dokumentasi Teknis Per Modul
+├── models/                 # Model & Engine Logic (MVC)
 │   ├── AlternatifModel.php
+│   ├── AuthModel.php
 │   ├── DashboardModel.php
 │   ├── HasilModel.php
 │   ├── KriteriaModel.php
 │   ├── LaporanModel.php
-│   ├── PdfHelper.php       # Utilitas pembuat dokumen PDF resmi
+│   ├── PdfHelper.php       # Generator Laporan PDF Formal
 │   ├── PenilaianModel.php
 │   ├── RespondenModel.php
-│   ├── SubKriteriaModel.php
-│   └── UserModel.php
-├── template/               # Tata Letak Layout Bersama
-│   ├── layout_admin_chrome.php # Wrapper navigasi admin
-│   ├── layout_admin_foot.php
-│   ├── layout_admin_head.php
-│   ├── layout_public_foot.php  # Footer publik (mengandung notifikasi)
-│   └── layout_public_head.php  # Header publik
-├── vendor/                 # Pustaka Pihak Ketiga (Composer)
-├── views/                  # UI Templates (MVC)
-│   ├── alternatif/
-│   ├── auth/               # Desain form login
-│   ├── dashboard/
-│   ├── hasil/
-│   ├── kriteria/
-│   ├── kuesioner/          # Pengisian survei publik
-│   ├── landing/            # Beranda web utama
-│   ├── laporan/
-│   ├── penilaian/
-│   ├── responden/
-│   └── sub_kriteria/
-├── index.php               # Front Controller / Pintu Masuk Aplikasi
-├── package.json            # Daftar dependensi npm
-├── tailwind.config.js      # Konfigurasi grid & tema Tailwind CSS
-└── README.md               # Berkas ini
+│   ├── SmartCalculator.php # Engine Kalkulasi SPK SMART
+│   └── SubKriteriaModel.php
+├── template/               # Layout Shell Templates
+│   ├── layout_admin_chrome.php # Admin Sidebar & Navigation
+│   ├── layout_admin_head.php / foot.php
+│   └── layout_public_head.php / foot.php
+├── views/                  # View Templates (MVC)
+├── index.php               # Front Controller Entrypoint
+├── package.json            # NPM Build Scripts (Tailwind CSS)
+├── composer.json           # Composer Dependencies (TCPDF)
+├── studi.md                # Dokumentasi Perhitungan Manual SMART
+├── transfer_knowledge.md   # Panduan Transfer Knowledge Developer
+└── README.md               # Berkas Dokumentasi Resmi
 ```
 
 ---
 
-## 💻 Cara Instalasi & Menjalankan Aplikasi
+## 💻 7. Cara Instalasi & Menjalankan Aplikasi
 
 ### Persyaratan Sistem:
-*   PHP >= 8.0 (Direkomendasikan PHP 8.1 / 8.2)
-*   MySQL / MariaDB
-*   Composer (untuk manajemen dependensi backend)
-*   Node.js & npm (untuk kompilasi Tailwind CSS)
-*   Laragon atau XAMPP sebagai server lokal
+- **PHP** >= 8.0 (Direkomendasikan PHP 8.1 / 8.2 / 8.3)
+- **MySQL / MariaDB**
+- **Composer** (Manajemen dependensi backend)
+- **Node.js & npm** (Kompilasi Tailwind CSS)
+- **Laragon / XAMPP** (Web Server Lokal)
 
 ### Langkah Penyiapan:
-1.  **Clone atau Salin Repository**:
-    Letakkan folder proyek di direktori root server lokal Anda (misal `C:\laragon\www\web_discakpil` atau `C:\xampp\htdocs\web_discakpil`).
-    
-2.  **Impor Database**:
-    *   Buat database baru bernama `db_disdukcapil_smart` di PHPMyAdmin.
-    *   Impor berkas SQL terupdate dari folder `database/` ke database tersebut.
 
-3.  **Konfigurasi Koneksi Database**:
-    Buka file [Database.php](file:///c:/laragon/www/web_discakpil/config/Database.php) dan sesuaikan username/password MySQL server lokal Anda:
-    ```php
-    private $host = "localhost";
-    private $db_name = "db_disdukcapil_smart";
-    private $username = "root";
-    private $password = ""; // Sesuaikan password local db Anda
-    ```
+1. **Salin Repository Proyek**:
+   Letakkan folder proyek di direktori root server lokal Anda:
+   - Laragon: `C:\laragon\www\web_discakpil`
+   - XAMPP: `C:\xampp\htdocs\web_discakpil`
 
-4.  **Instal Dependensi Backend (Composer)**:
-    Buka terminal di root folder project lalu jalankan:
-    ```bash
-    composer install
-    ```
+2. **Impor Database**:
+   - Buat database baru bernama `db_disdukcapil_smart` pada PHPMyAdmin.
+   - Impor berkas SQL dari folder [database/db_disdukcapil_smart (2).sql](file:///c:/laragon/www/web_discakpil/database/db_disdukcapil_smart%20%282%29.sql).
 
-5.  **Instal & Jalankan Kompilasi Frontend (Tailwind)**:
-    Pasang modul node untuk Tailwind CSS dan build asset:
-    ```bash
-    npm install
-    npm run build:css
-    ```
+3. **Instal Dependensi Backend (Composer)**:
+   Jalankan perintah berikut di terminal folder proyek:
+   ```bash
+   composer install
+   ```
 
-6.  **Akses Aplikasi**:
-    Buka peramban (browser) dan ketik:
-    *   Halaman Utama: `http://localhost/web_discakpil/`
-    *   Halaman Login: `http://localhost/web_discakpil/index.php?controller=auth&action=index`
-    *   *Default Login Admin*: Username: `admin` | Password: `adminpassword`
+4. **Kompilasi Assets Frontend (Tailwind CSS)**:
+   ```bash
+   npm install
+   npm run build:css
+   ```
+
+5. **Akses Aplikasi**:
+   - **Landing Page Publik**: `http://localhost/web_discakpil/`
+   - **Halaman Login**: `http://localhost/web_discakpil/index.php?controller=auth&action=index`
 
 ---
 
-## 👥 Layanan Dukungan Teknis (Support & Donation)
+## 👥 Layanan Dukungan Teknis
 
-Jika Anda menemui kendala atau ingin memberikan dukungan donasi kepada pengembang, silakan hubungi narahubung support atau pindai kode QR donasi di bawah ini:
+Jika Anda membutuhkan bantuan teknis atau pengembangan lebih lanjut, silakan hubungi tim pengembang:
 
-| Hubungi Support | Pindai Kode QR Donasi |
-| :---: | :---: |
-| ![Support Team](assets/images/support.png) | ![Scan QR](assetspada/QR.jpeg) |
-| **Tim Teknis Synectra**<br>✉️ [synectra24@gmail.com](mailto:synectra24@gmail.com)<br>📞 [+62 888-0737-6359](https://wa.me/6288807376359) | **Scan QR Donasi Support**<br>Salurkan dukungan Anda secara langsung |
+- ✉️ **Email Support**: [synectra24@gmail.com](mailto:synectra24@gmail.com)
+- 📞 **WhatsApp Support**: [+62 888-0737-6359](https://wa.me/6288807376359)
 
 ---
 
 ## 📜 Lisensi & Hak Cipta
-Aplikasi ini dikembangkan dan didistribusikan secara resmi di bawah lisensi berikut:
+
+Aplikasi ini dikembangkan dan didistribusikan secara resmi di bawah lisensi:
 
 ### 📄 MIT License
-Hak Cipta &copy; 2026 **Synectra Jasa Digital**.
-
-Dengan ini diberikan izin, secara gratis, kepada siapa pun yang memperoleh salinan perangkat lunak ini dan file dokumentasi terkait (Perangkat Lunak), untuk mempergunakan Perangkat Lunak tanpa batasan, termasuk namun tidak terbatas pada hak untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan, mendistribusikan, mensublisensikan, dan/atau menjual salinan Perangkat Lunak, sesuai dengan ketentuan lisensi MIT.
+Hak Cipta &copy; 2026 **Dinas Kependudukan dan Pencatatan Sipil Kota Padang & Synectra Jasa Digital**.
