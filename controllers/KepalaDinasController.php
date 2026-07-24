@@ -4,6 +4,8 @@ require_once 'models/DashboardModel.php';
 class KepalaDinasController
 {
     private $dashboardModel;
+    private $penilaianModel;
+    private $respondenModel;
 
     public function __construct($connection)
     {
@@ -26,6 +28,10 @@ class KepalaDinasController
         }
 
         $this->dashboardModel = new DashboardModel($connection);
+        require_once 'models/PenilaianModel.php';
+        $this->penilaianModel = new PenilaianModel($connection);
+        require_once 'models/RespondenModel.php';
+        $this->respondenModel = new RespondenModel($connection);
     }
 
     public function index()
@@ -65,6 +71,65 @@ class KepalaDinasController
         ];
 
         require_once 'views/dashboard/kadis.php';
+    }
+
+    public function penilaian()
+    {
+        $keyword = trim($_GET['keyword'] ?? '');
+        $filter_alternatif = intval($_GET['id_alternatif'] ?? 0);
+
+        $penilaiansGrouped = $this->penilaianModel->getAllGroupedByRespondenWithFilter($keyword, $filter_alternatif);
+        $alternatifs = $this->penilaianModel->getAllAlternatif();
+        $totalPenilaian = $this->penilaianModel->getTotal();
+
+        $data = [
+            'title' => 'Data Penilaian IKM (Read-Only) - Kepala Dinas',
+            'page_title' => 'Data Penilaian IKM (Eksekutif)',
+            'penilaians' => $penilaiansGrouped,
+            'alternatifs' => $alternatifs,
+            'total' => $totalPenilaian,
+            'keyword' => $keyword,
+            'filter_alternatif' => $filter_alternatif,
+            'user' => [
+                'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Kepala Dinas',
+                'username' => $_SESSION['username'] ?? '',
+                'role' => $_SESSION['role'] ?? 'kepala_dinas'
+            ]
+        ];
+
+        require_once 'views/dashboard/kadis_penilaian.php';
+    }
+
+    public function detailPenilaian()
+    {
+        $id_responden = intval($_GET['id_responden'] ?? 0);
+        if ($id_responden <= 0) {
+            header('Location: index.php?controller=kepalaDinas&action=penilaian');
+            exit;
+        }
+
+        $responden = $this->respondenModel->getById($id_responden);
+        if (!$responden) {
+            $_SESSION['error'] = 'Data responden tidak ditemukan!';
+            header('Location: index.php?controller=kepalaDinas&action=penilaian');
+            exit;
+        }
+
+        $penilaians = $this->penilaianModel->getByResponden($id_responden);
+
+        $data = [
+            'title' => 'Detail Penilaian Responden - Kepala Dinas',
+            'page_title' => 'Detail Penilaian IKM',
+            'responden' => $responden,
+            'penilaians' => $penilaians,
+            'user' => [
+                'nama_lengkap' => $_SESSION['nama_lengkap'] ?? 'Kepala Dinas',
+                'username' => $_SESSION['username'] ?? '',
+                'role' => $_SESSION['role'] ?? 'kepala_dinas'
+            ]
+        ];
+
+        require_once 'views/dashboard/kadis_penilaian_detail.php';
     }
 
     public function logout()

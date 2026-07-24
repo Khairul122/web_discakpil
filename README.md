@@ -69,7 +69,7 @@ Sistem mengimplementasikan metode SMART dengan tahapan matematis sebagai berikut
 | Role | Username | Password | Hak Akses Utama |
 | :--- | :--- | :--- | :--- |
 | **Administrator** | `admin` | `admin123` | Akses penuh (Master Data, Responden, Penilaian, Hasil SMART, Cetak Laporan) |
-| **Kepala Dinas** | `kadis` | `admin123` | Akses eksekutif (Dashboard IKM & Cetak Laporan PDF) |
+| **Kepala Dinas** | `kadis` | `admin123` | Akses eksekutif (Dashboard IKM, Data Penilaian Read-Only, & Cetak Laporan PDF) |
 
 ---
 

@@ -145,6 +145,13 @@ $logoutUrl = 'index.php?controller=' . ($_SESSION['role'] ?? 'auth') . '&action=
     <?php endif; ?>
 
     <?php if (hasRole('kepala_dinas')): ?>
+      <a href="index.php?controller=kepalaDinas&action=penilaian"
+         class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
+                <?= (isActive('kepalaDinas', 'penilaian') || isActive('kepalaDinas', 'detailPenilaian')) ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+        <i class="fas fa-clipboard-list w-5 text-center"></i>
+        <span>Data Penilaian</span>
+      </a>
+
       <a href="index.php?controller=cetak&action=index"
          class="flex items-center gap-3 px-4 py-3 rounded-gov text-sm font-semibold min-h-[44px] transition-all duration-200
                 <?= isActive('cetak') ? 'bg-gov-blue-100 text-gov-blue-800 border-l-4 border-gov-blue-800 shadow-soft-raised-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
