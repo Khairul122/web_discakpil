@@ -55,9 +55,11 @@ class PenilaianKuesionerController
         $id_responden = 0;
 
         foreach ($existingRespondens as $existing) {
-            if ($existing['nama_lengkap'] === $nama_responden &&
+            if (
+                $existing['nama_lengkap'] === $nama_responden &&
                 $existing['usia'] == $usia &&
-                $existing['pekerjaan'] === $pekerjaan) {
+                $existing['pekerjaan'] === $pekerjaan
+            ) {
                 $id_responden = $existing['id_responden'];
                 break;
             }
@@ -69,9 +71,11 @@ class PenilaianKuesionerController
                 // Get the newly created respondent ID
                 $newRespondents = $respondenModel->search($nama_responden);
                 foreach ($newRespondents as $new) {
-                    if ($new['nama_lengkap'] === $nama_responden &&
+                    if (
+                        $new['nama_lengkap'] === $nama_responden &&
                         $new['usia'] == $usia &&
-                        $new['pekerjaan'] === $pekerjaan) {
+                        $new['pekerjaan'] === $pekerjaan
+                    ) {
                         $id_responden = $new['id_responden'];
                         break;
                     }

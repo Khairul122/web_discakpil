@@ -80,7 +80,7 @@
         <?php else: ?>
           <tr><td colspan="6" class="text-center text-slate-400 py-6">
             Belum ada data perhitungan SMART<br>
-            <a href="index.php?controller=hasil&action=index" class="btn-gov-primary !py-2 !text-xs mt-2 inline-flex"><i class="fas fa-calculator"></i> Lihat Hasil SMART</a>
+            <a href="index.php?controller=cetak&action=index" class="btn-gov-primary !py-2 !text-xs mt-2 inline-flex"><i class="fas fa-file-pdf"></i> Buka Menu Cetak Laporan</a>
           </td></tr>
         <?php endif; ?>
       </tbody>
